@@ -49,7 +49,7 @@ public class PaintUtils extends Paint {
         roundRec.setStrokeWidth(20);
 
         // paint for border of the rectangle
-        int myColor = context.getResources().getColor(R.color.mygreen);
+        int myColor = context.getResources().getColor(R.color.colorPrimaryDark);
         borderRec = new Paint(Paint.ANTI_ALIAS_FLAG);
         borderRec.setStrokeWidth(10);
         borderRec.setColor(myColor);

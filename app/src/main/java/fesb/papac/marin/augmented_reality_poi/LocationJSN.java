@@ -11,25 +11,25 @@ public class LocationJSN {
 
     @SerializedName("lat")
     @Expose
-    private Double lat;
+    private Double latitude;
 
     @SerializedName("lng")
     @Expose
-    private Double lng;
+    private Double longitude;
 
     public Double getLat() {
-        return lat;
+        return latitude;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
+    public void setLat(Double latitude) {
+        this.latitude = latitude;
     }
 
     public Double getLng() {
-        return lng;
+        return longitude;
     }
 
-    public void setLng(Double lng) {
-        this.lng = lng;
+    public void setLng(Double longitude) {
+        this.longitude = longitude;
     }
 }

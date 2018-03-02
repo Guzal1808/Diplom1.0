@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">AugmentedPOI</string>
-    <string name="GoogleAPIKey" templateMergeStrategy="preserve" translatable="false">AIzaSyBPkUvg6Xz17H4uK5rBl-Hf7K7ItOvjCUA</string>
-    <integer name="searchingRadius">500</integer>
+    <string name="GOOGLEAPI_KEY">AIzaSyBPkUvg6Xz17H4uK5rBl-Hf7K7ItOvjCUA</string>
+    <string name="SEARCHING_RADIUS">500</string>
 </resources>

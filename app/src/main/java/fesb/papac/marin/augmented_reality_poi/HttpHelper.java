@@ -20,7 +20,7 @@ public class HttpHelper {
     private String nextPageToken;
     @SerializedName("results")
     @Expose
-    private List<ResultAPI> results = new ArrayList<ResultAPI>();
+    private List<PointOfInterest> results = new ArrayList<PointOfInterest>();
     @SerializedName("status")
     @Expose
     private String status;
@@ -66,7 +66,7 @@ public class HttpHelper {
      * @return
      * The results
      */
-    public List<ResultAPI> getResults() {
+    public List<PointOfInterest> getResults() {
         return results;
     }
 
@@ -75,7 +75,7 @@ public class HttpHelper {
      * @param results
      * The results
      */
-    public void setResults(List<ResultAPI> results) {
+    public void setResults(List<PointOfInterest> results) {
         this.results = results;
     }
 

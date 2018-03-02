@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 public interface PointOfInterestService {
 
-    ArrayList<PointOfInterest> getAllPointsOfInterest(double lat, double lng);
-    PointOfInterest getPointOfInterestByType(double lat, double lng,String type);
     void getPlacesByType(String type, PointOfInterest poi);
+     ArrayList<PointOfInterest> getListOfPOI();
 }

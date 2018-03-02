@@ -1,87 +1,245 @@
 package fesb.papac.marin.augmented_reality_poi;
 
-/**
- * Created by Marin on 26.4.2017..
- */
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PointOfInterest {
 
-    public double latitude;
-    public double longitude;
-    public double altitude;
-    public String place;
-    public String data;
+    @SerializedName("geometry")
+    @Expose
+    private Geometry geometry;
+    @SerializedName("icon")
+    @Expose
+    private String icon;
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("opening_hours")
+    @Expose
+    private OpeningHours openingHours;
+    @SerializedName("photos")
+    @Expose
+    private List<Photo> photos = new ArrayList<Photo>();
+    @SerializedName("place_id")
+    @Expose
+    private String placeId;
+    @SerializedName("rating")
+    @Expose
+    private Double rating;
+    @SerializedName("reference")
+    @Expose
+    private String reference;
+    @SerializedName("scope")
+    @Expose
+    private String scope;
+    @SerializedName("types")
+    @Expose
+    private List<String> types = new ArrayList<String>();
+    @SerializedName("vicinity")
+    @Expose
+    private String vicinity;
+    @SerializedName("price_level")
+    @Expose
+    private Integer priceLevel;
 
-    public Geometry geometry;
-    public Photo photo;
-    public OpeningHours openingHours;
-
-    public PointOfInterest() {
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public double getAltitude() {
-        return altitude;
-    }
-
-    public String getPlaces() {
-        return place;
-    }
-
-    public String getData() { return data;}
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public void setAltitude(double altitude) {
-        this.altitude = altitude;
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
+    /**
+     * @return The geometry
+     */
     public Geometry getGeometry() {
         return geometry;
     }
 
+    /**
+     * @param geometry The geometry
+     */
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
 
-    public Photo getPhoto() {
-        return photo;
+    /**
+     * @return The icon
+     */
+    public String getIcon() {
+        return icon;
     }
 
-    public void setPhoto(Photo photo) {
-        this.photo = photo;
+    /**
+     * @param icon The icon
+     */
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
+    /**
+     * @return The id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id The id
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @return The name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name The name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return The openingHours
+     */
     public OpeningHours getOpeningHours() {
         return openingHours;
     }
 
+    /**
+     * @param openingHours The opening_hours
+     */
     public void setOpeningHours(OpeningHours openingHours) {
         this.openingHours = openingHours;
     }
+
+    /**
+     * @return The photos
+     */
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    /**
+     * @param photos The photos
+     */
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
+
+    /**
+     * @return The placeId
+     */
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    /**
+     * @param placeId The place_id
+     */
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+
+    /**
+     * @return The rating
+     */
+    public Double getRating() {
+        return rating;
+    }
+
+    /**
+     * @param rating The rating
+     */
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    /**
+     * @return The reference
+     */
+    public String getReference() {
+        return reference;
+    }
+
+    /**
+     * @param reference The reference
+     */
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    /**
+     * @return The scope
+     */
+    public String getScope() {
+        return scope;
+    }
+
+    /**
+     * @param scope The scope
+     */
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    /**
+     * @return The types
+     */
+    public List<String> getTypes() {
+        return types;
+    }
+
+    /**
+     * @param types The types
+     */
+    public void setTypes(List<String> types) {
+        this.types = types;
+    }
+
+    /**
+     * @return The vicinity
+     */
+    public String getVicinity() {
+        return vicinity;
+    }
+
+    /**
+     * @param vicinity The vicinity
+     */
+    public void setVicinity(String vicinity) {
+        this.vicinity = vicinity;
+    }
+
+    /**
+     * @return The priceLevel
+     */
+    public Integer getPriceLevel() {
+        return priceLevel;
+    }
+
+    /**
+     * @param priceLevel The price_level
+     */
+    public void setPriceLevel(Integer priceLevel) {
+        this.priceLevel = priceLevel;
+    }
+
+    public Double getLatitude() {
+        return this.getGeometry().getLocation().getLat();
+    }
+
+    public Double getLongitude() {
+        return this.getGeometry().getLocation().getLng();
+    }
+
+    public Double getAltitude() {
+        return 0.0;
+    }
+
 }
