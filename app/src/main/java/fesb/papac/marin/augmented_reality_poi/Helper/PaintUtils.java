@@ -1,8 +1,11 @@
-package fesb.papac.marin.augmented_reality_poi;
+package fesb.papac.marin.augmented_reality_poi.Helper;
 
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextPaint;
+
+import fesb.papac.marin.augmented_reality_poi.R;
+import fesb.papac.marin.augmented_reality_poi.View.ViewMain;
 
 /**
  * Created by Marin on 19.4.2017..

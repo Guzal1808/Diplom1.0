@@ -1,4 +1,4 @@
-package fesb.papac.marin.augmented_reality_poi;
+package fesb.papac.marin.augmented_reality_poi.Model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -47,7 +47,7 @@ public class PointOfInterest {
     @SerializedName("price_level")
     @Expose
     private Integer priceLevel;
-
+    private String type;
     /**
      * @return The geometry
      */
@@ -242,4 +242,11 @@ public class PointOfInterest {
         return 0.0;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

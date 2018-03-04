@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="places">
+        <item>Еда</item>
+        <item>Досуг</item>
+        <item>Деньги</item>
+    </string-array>
+    <array name="places_picture">
+        <item>@drawable/eat</item>
+        <item>@drawable/enjoy</item>
+        <item>@drawable/money</item>
+    </array>
+    <array name="placesType">
+        <item>food</item>
+        <item>park|museum|movie_theater</item>
+        <item>bank|atm</item>
+    </array>
+</resources>

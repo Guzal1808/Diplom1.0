@@ -1,10 +1,15 @@
-package fesb.papac.marin.augmented_reality_poi;
+package fesb.papac.marin.augmented_reality_poi.Controller;
 
 import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
 
+import fesb.papac.marin.augmented_reality_poi.Model.HttpHelper;
+import fesb.papac.marin.augmented_reality_poi.Model.PointOfInterest;
+import fesb.papac.marin.augmented_reality_poi.R;
+import fesb.papac.marin.augmented_reality_poi.Service.PointOfInterestService;
+import fesb.papac.marin.augmented_reality_poi.Service.RetrofitMaps;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -15,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Dementor on 24.02.2018.
  */
 
-public class PointOfInterestController implements  PointOfInterestService {
+public class PointOfInterestController implements PointOfInterestService {
 
     ArrayList<PointOfInterest> listOfPOI=new ArrayList<>();
     Context context;
@@ -42,7 +47,7 @@ public class PointOfInterestController implements  PointOfInterestService {
 
         RetrofitMaps service = retrofit.create(RetrofitMaps.class);
 
-        Call<HttpHelper> call = service.getNearbyPlaces(poi.getGeometry().getLocation().getLat() + "," + poi.getGeometry().getLocation().getLng(), RADIUS,type, KEY);
+        Call<HttpHelper> call = service.getNearbyPlaces(poi.getGeometry().getLocation().getLat() + "," + poi.getGeometry().getLocation().getLng(), RADIUS,poi.getType(), KEY);
 
         call.enqueue(new Callback<HttpHelper>() {
 

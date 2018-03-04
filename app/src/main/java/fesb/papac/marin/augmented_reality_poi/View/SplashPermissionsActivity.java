@@ -1,4 +1,4 @@
-package fesb.papac.marin.augmented_reality_poi;
+package fesb.papac.marin.augmented_reality_poi.View;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -30,60 +31,26 @@ import java.util.Set;
 
 public class SplashPermissionsActivity extends Activity {
 
-    /**
-     * The time that the splash screen will be on the screen in milliseconds.
-     */
     private int timeoutMillis = 0;
 
-    /** The time when this {@link Activity} was created. */
     private long startTimeMillis = 0;
 
-    /** The code used when requesting permissions */
     private static final int PERMISSIONS_REQUEST = 1234;
 
-    /** A random number generator for the background colors. */
     private static final Random random = new Random();
 
-    /**
-     * The TextView which is used to inform the user whether the permissions are
-     * granted.
-     */
     private TextView textView = null;
     private static final int  textViewID  = View.generateViewId();
 
-    /*
-     * ---------------------------------------------
-     *
-     * Getters
-     *
-     * ---------------------------------------------
-     */
-    /**
-     * Get the time (in milliseconds) that the splash screen will be on the
-     * screen before starting the {@link Activity} who's class is returned by
-     * {@link #getNextActivityClass()}.
-     */
+
     public int getTimeoutMillis() {
         return timeoutMillis;
     }
 
-    /** Get the {@link Activity} to start when the splash screen times out. */
-   @SuppressWarnings("rawtypes")
-    public Class getNextActivityClass() {
-        return MainActivity.class;
-    }
 
-    /**
-     * Get the list of required permissions by searching the manifest. If you
-     * don't think the default behavior is working, then you could try
-     * overriding this function to return something like:
-     *
-     * <pre>
-     * <code>
-     * return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-     * </code>
-     * </pre>
-     */
+    public Class getNextActivityClass() {
+        return CardActivity.class;
+    }
     public String[] getRequiredPermissions() {
         String[] permissions = null;
         try {
@@ -99,13 +66,6 @@ public class SplashPermissionsActivity extends Activity {
         }
     }
 
-    /*
-     * ---------------------------------------------
-     *
-     * Activity Methods
-     *
-     * ---------------------------------------------
-     */
     @TargetApi(23)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,30 +92,14 @@ public class SplashPermissionsActivity extends Activity {
 
         /** Set the mainLayout as the content view */
         setContentView(mainLayout);
-
-        /**
-         * Save the start time of this Activity, which will be used to determine
-         * when the splash screen should timeout.
-         */
-        startTimeMillis = System.currentTimeMillis();
-
-        /**
-         * On a post-Android 6.0 devices, check if the required permissions have
-         * been granted.
-         */
-        if (Build.VERSION.SDK_INT >= 23) {
+         if (Build.VERSION.SDK_INT >= 23) {
             checkPermissions();
         } else {
             startNextActivity();
         }
     }
 
-    /**
-     * See if we now have all of the required dangerous permissions. Otherwise,
-     * tell the user that they cannot continue without granting the permissions,
-     * and then request the permissions again.
-     */
-    @TargetApi(23)
+   @TargetApi(23)
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST) {
@@ -163,45 +107,19 @@ public class SplashPermissionsActivity extends Activity {
         }
     }
 
-    /*
-     * ---------------------------------------------
-     *
-     * Other Methods
-     *
-     * ---------------------------------------------
-     */
-    /**
-     * After the timeout, start the {@link Activity} as specified by
-     * {@link #getNextActivityClass()}, and remove the splash screen from the
-     * backstack. Also, we can change the message shown to the user to tell them
-     * we now have the requisite permissions.
-     */
-    private void startNextActivity() {
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                textView.setText("Permissions granted...");
-            }
-        });
+   private void startNextActivity() {
+        runOnUiThread(() -> textView.setText("Permissions granted..."));
         long delayMillis = getTimeoutMillis() - (System.currentTimeMillis() - startTimeMillis);
         if (delayMillis < 0) {
             delayMillis = 0;
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(SplashPermissionsActivity.this, getNextActivityClass()));
-                finish();
-            }
+        new Handler().postDelayed(() -> {
+            startActivity(new Intent(SplashPermissionsActivity.this, CardActivity.class));
+            finish();
         }, delayMillis);
     }
 
-    /**
-     * Check if the required permissions have been granted, and
-     * {@link #startNextActivity()} if they have. Otherwise
-     * {@link #requestPermissions(String[], int)}.
-     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkPermissions() {
         String[] ungrantedPermissions = requiredPermissionsStillNeeded();
         if (ungrantedPermissions.length == 0) {
@@ -211,11 +129,6 @@ public class SplashPermissionsActivity extends Activity {
         }
     }
 
-    /**
-     * Convert the array of required permissions to a {@link Set} to remove
-     * redundant elements. Then remove already granted permissions, and return
-     * an array of ungranted permissions.
-     */
     @TargetApi(23)
     private String[] requiredPermissionsStillNeeded() {
 

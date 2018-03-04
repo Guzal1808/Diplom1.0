@@ -1,4 +1,4 @@
-package fesb.papac.marin.augmented_reality_poi;
+package fesb.papac.marin.augmented_reality_poi.View;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,16 +10,18 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
+import fesb.papac.marin.augmented_reality_poi.R;
+
 public class MainActivity extends AppCompatActivity {
 
     private ViewMain Content;
-
+    public static final String EXTRA_POSITION = "position";
+    String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             showSettingAlert();
@@ -31,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
         DisplayView displayView1 = new DisplayView(this);
         ViewPane3.addView(displayView1);
 
-        Content = new ViewMain(getApplicationContext());
+       Content = new ViewMain(getApplicationContext(),getIntent().getStringExtra(EXTRA_POSITION));
+
         ViewPane2.addView(Content);
 
 

@@ -1,4 +1,4 @@
-package fesb.papac.marin.augmented_reality_poi;
+package fesb.papac.marin.augmented_reality_poi.View;
 
 import android.Manifest;
 import android.app.Activity;
@@ -34,6 +34,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import fesb.papac.marin.augmented_reality_poi.Helper.PaintUtils;
+import fesb.papac.marin.augmented_reality_poi.Model.Geometry;
+import fesb.papac.marin.augmented_reality_poi.Model.LocationJSN;
+import fesb.papac.marin.augmented_reality_poi.Model.PointOfInterest;
+import fesb.papac.marin.augmented_reality_poi.Controller.PointOfInterestController;
+import fesb.papac.marin.augmented_reality_poi.R;
 
 /**
  * Created by Marin on 19.4.2017..
@@ -128,13 +135,14 @@ public class ViewMain extends View implements SensorEventListener,
 
     static ArrayList<PointOfInterest> placesList= new ArrayList<>();
 
+    private String type;
 
 
-    public ViewMain(Context context) {
+    public ViewMain(Context context,String type) {
         super(context);
         this.context = context;
         this.handler = new Handler();
-
+        this.type=type;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         sensors = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -162,7 +170,7 @@ public class ViewMain extends View implements SensorEventListener,
         Geometry geo = new Geometry();
         geo.setLocation(locationJSN);
         poi.setGeometry(geo);
-
+        poi.setType(type);
         poiController.getPlacesByType("cafe",poi);
         listOfPOI = poiController.getListOfPOI();
 
@@ -266,7 +274,7 @@ public class ViewMain extends View implements SensorEventListener,
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         pointOfInterests= listOfPOI;
-        Log.v(DEBUG_TAG, "Deraw " + listOfPOI.size());
+
         float[] dist = new float[1];
         int [] distance = new int [ pointOfInterests.size()];
         int [] counter = new int[ pointOfInterests.size()];
@@ -811,4 +819,11 @@ public class ViewMain extends View implements SensorEventListener,
         return output;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }
