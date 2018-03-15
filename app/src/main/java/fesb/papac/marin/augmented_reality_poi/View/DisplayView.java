@@ -13,13 +13,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by Marin on 19.4.2017..
- */
 
-/**
- * This is a simple class for activating camera view
- */
+
+
 public class DisplayView extends SurfaceView implements
         SurfaceHolder.Callback {
 

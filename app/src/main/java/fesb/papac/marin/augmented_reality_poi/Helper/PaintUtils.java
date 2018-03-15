@@ -7,14 +7,6 @@ import android.text.TextPaint;
 import fesb.papac.marin.augmented_reality_poi.R;
 import fesb.papac.marin.augmented_reality_poi.View.ViewMain;
 
-/**
- * Created by Marin on 19.4.2017..
- */
-
-/**
- * Here i have my settings for painting on canvas. I use .getResources().getDisplayMetrics().density
- * for text size because i want the text to be the same on every phone, no mater the resolution of the screen
- */
 public class PaintUtils extends Paint {
 
     private TextPaint contentPaint;

@@ -3,6 +3,8 @@ package fesb.papac.marin.augmented_reality_poi.Controller;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+
 import java.util.ArrayList;
 
 import fesb.papac.marin.augmented_reality_poi.Model.HttpHelper;
@@ -24,20 +26,18 @@ public class PointOfInterestController implements PointOfInterestService {
 
     ArrayList<PointOfInterest> listOfPOI=new ArrayList<>();
     Context context;
-
-    public PointOfInterestController() {
-
-    }
+    PlacePhotoMetadata photo;
 
     public PointOfInterestController(Context context) {
         this.context = context;
     }
 
     @Override
-    public void getPlacesByType(String type, PointOfInterest poi) {
+    public void getPlacesByType(PointOfInterest poi) {
 
         final String url = "https://maps.googleapis.com/maps/";
         final String KEY = context.getString(R.string.GOOGLEAPI_KEY);//"AIzaSyBPkUvg6Xz17H4uK5rBl-Hf7K7ItOvjCUA";
+
         final String RADIUS= context.getString(R.string.SEARCHING_RADIUS);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -55,9 +55,8 @@ public class PointOfInterestController implements PointOfInterestService {
             public void onResponse(Call<HttpHelper> call, Response<HttpHelper> response) {
                 try {
                     Log.d("onResponse", "Parse data");
-                    for (int i = 0; i < response.body().getResults().size(); i++) {
-                        listOfPOI.add(response.body().getResults().get(i));
-                    }
+                    listOfPOI.addAll(response.body().getResults());
+
                 } catch (Exception e) {
                     Log.d("onResponse", "There is an error");
                     e.printStackTrace();
@@ -75,4 +74,5 @@ public class PointOfInterestController implements PointOfInterestService {
     public ArrayList<PointOfInterest> getListOfPOI() {
         return listOfPOI;
     }
+
 }

@@ -19,15 +19,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-/**
- * Created by Marin on 19.4.2017..
- */
-
-/**
- * This class is used to get permissions need for the app. It also asks the user for permission on startup.
- * This class will check if the permissions are accepted every time the app is turned on.
- * If the user changes permissions in settings, he will be asked again for permissions when he starts the app.
- */
 
 public class SplashPermissionsActivity extends Activity {
 
@@ -40,7 +31,7 @@ public class SplashPermissionsActivity extends Activity {
     private static final Random random = new Random();
 
     private TextView textView = null;
-    private static final int  textViewID  = View.generateViewId();
+    private static final int textViewID = View.generateViewId();
 
 
     public int getTimeoutMillis() {
@@ -51,6 +42,7 @@ public class SplashPermissionsActivity extends Activity {
     public Class getNextActivityClass() {
         return CardActivity.class;
     }
+
     public String[] getRequiredPermissions() {
         String[] permissions = null;
         try {
@@ -70,36 +62,36 @@ public class SplashPermissionsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        /** Default creation code. */
+
         super.onCreate(savedInstanceState);
 
-        /** Create the layout that will hold the TextView. */
+
         LinearLayout mainLayout = new LinearLayout(this);
         mainLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
-        /** Add a TextView and set the initial text. */
+
         textView = new TextView(this);
         textView.setTextSize(50);
         textView.setId(textViewID);
         textView.setText("Waiting for permissions...");
         mainLayout.addView(textView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-        /** Set the background color. */
+
         int off = 128;
         int rest = 256 - off;
         int color = Color.argb(255, off + random.nextInt(rest), off + random.nextInt(rest), off + random.nextInt(rest));
         mainLayout.setBackgroundColor(color);
 
-        /** Set the mainLayout as the content view */
+
         setContentView(mainLayout);
-         if (Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= 23) {
             checkPermissions();
         } else {
             startNextActivity();
         }
     }
 
-   @TargetApi(23)
+    @TargetApi(23)
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST) {
@@ -107,7 +99,7 @@ public class SplashPermissionsActivity extends Activity {
         }
     }
 
-   private void startNextActivity() {
+    private void startNextActivity() {
         runOnUiThread(() -> textView.setText("Permissions granted..."));
         long delayMillis = getTimeoutMillis() - (System.currentTimeMillis() - startTimeMillis);
         if (delayMillis < 0) {
@@ -136,7 +128,7 @@ public class SplashPermissionsActivity extends Activity {
         for (String permission : getRequiredPermissions()) {
             permissions.add(permission);
         }
-        for (Iterator<String> i = permissions.iterator(); i.hasNext();) {
+        for (Iterator<String> i = permissions.iterator(); i.hasNext(); ) {
             String permission = i.next();
             if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
                 Log.d(SplashPermissionsActivity.class.getSimpleName(),

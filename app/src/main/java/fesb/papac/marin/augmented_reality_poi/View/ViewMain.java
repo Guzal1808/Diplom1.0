@@ -29,32 +29,32 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fesb.papac.marin.augmented_reality_poi.Controller.PointOfInterestController;
 import fesb.papac.marin.augmented_reality_poi.Helper.PaintUtils;
 import fesb.papac.marin.augmented_reality_poi.Model.Geometry;
 import fesb.papac.marin.augmented_reality_poi.Model.LocationJSN;
 import fesb.papac.marin.augmented_reality_poi.Model.PointOfInterest;
-import fesb.papac.marin.augmented_reality_poi.Controller.PointOfInterestController;
 import fesb.papac.marin.augmented_reality_poi.R;
 
-/**
- * Created by Marin on 19.4.2017..
- */
+
 
 public class ViewMain extends View implements SensorEventListener,
         LocationListener {
 
     double canvasWidth, canvasHeight;
     float compasBearing, POIBearing;
+    GoogleApiClient mGoogleApiClient;
 
-    /**
-     * Here you set the distance of radar. No point that is further then radarRange won't be shown
-     */
     float radarRange = 600;
 
 
@@ -65,21 +65,9 @@ public class ViewMain extends View implements SensorEventListener,
     private final Context context;
     private Handler handler;
 
-    /**
-     * Here i put my POI (point of interest).
-     * First value is the LATITUDE
-     * Second value is the LONGITUDE
-     * Third value is the ALTITUDE (this value is never used, and for now it's random)
-     * Forth value is the NAME OF PLACE
-     *
-     */
-
     private LocationManager locationManager = null;
     private SensorManager sensors = null;
 
-    /**
-     * These variables are used to get current location and to get current sensor readings
-     */
     private Location lastLocation;
     private float[] lastAccelerometer, lastGyroscope, lastCompass, lastRotationVector, lastGameRotationVector, lastGravity, lastLinearAcc;
     double endLat, endLong, endAlti;
@@ -121,6 +109,10 @@ public class ViewMain extends View implements SensorEventListener,
     int bmpWidth = bmp.getWidth();
     int bmpHeight = bmp.getHeight();
 
+    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.food);
+    int iconWidth = icon.getWidth();
+    int iconHeigth = icon.getHeight();
+
     Bitmap bmpCompass = BitmapFactory.decodeResource(getResources(), R.drawable.kompas);
     float bmpCompassWidth = bmpCompass.getWidth();
     float bmpCompassHeight = bmpCompass.getHeight();
@@ -130,19 +122,19 @@ public class ViewMain extends View implements SensorEventListener,
     float bmpPointHeight = bmpPoint.getHeight();
 
     float mathTan;
-
+    ImageView image;
     PopupWindow popupWindow;
 
-    static ArrayList<PointOfInterest> placesList= new ArrayList<>();
+    static ArrayList<PointOfInterest> placesList = new ArrayList<>();
 
     private String type;
 
 
-    public ViewMain(Context context,String type) {
+    public ViewMain(Context context, String type) {
         super(context);
         this.context = context;
         this.handler = new Handler();
-        this.type=type;
+        this.type = type;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         sensors = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -171,21 +163,15 @@ public class ViewMain extends View implements SensorEventListener,
         geo.setLocation(locationJSN);
         poi.setGeometry(geo);
         poi.setType(type);
-        poiController.getPlacesByType("cafe",poi);
+        poiController.getPlacesByType(poi);
         listOfPOI = poiController.getListOfPOI();
 
-        /**
-         *  This is used to get field of view of the camera
-         */
         Camera camera = Camera.open();
         Camera.Parameters params = camera.getParameters();
         verticalFOV = params.getVerticalViewAngle();
         horizontalFOV = params.getHorizontalViewAngle();
         camera.release();
 
-        /**
-         * This is to get paint settings i need
-         */
         contentPaint = paintUtilities.getContentPaint();
         targetPaint = paintUtilities.getTargetPaint();
         textPaint = paintUtilities.getTextPaint();
@@ -197,11 +183,7 @@ public class ViewMain extends View implements SensorEventListener,
 
 
     private void startSensors() {
-        /**
-         * In here i can changed the delay of the sensors. The delay is not the same for every phone.
-         * It depends on the sensors. The sensor we are using now is the RotateVectorSensor which uses
-         * accelerometer, gyroscope and magnetometer.
-         */
+
         isAccelAvailable = sensors.registerListener(this, accelSensor,
                 SensorManager.SENSOR_DELAY_FASTEST);
         isCompassAvailable = sensors.registerListener(this, compassSensor,
@@ -219,9 +201,7 @@ public class ViewMain extends View implements SensorEventListener,
     }
 
     private void startGPS() {
-        /**
-         * Here i can set the accuracy of the gps, and the power requirement
-         */
+
         gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -236,34 +216,20 @@ public class ViewMain extends View implements SensorEventListener,
 
         Log.v(DEBUG_TAG, "Best provider: " + best);
 
-        /**
-         * void requestLocationUpdates (Criteria criteria, long minTime, float minDistance, PendingIntent intent)
-         * The elapsed time between location updates will never be less than minTime.
-         * The minDistance parameter can also be used to control the frequency of location updates.
-         * If it is greater than 0 then the location provider will only send your application an update when
-         * the location has changed by at least minDistance meters, AND at least minTime milliseconds have passed.
-         */
-
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         locationManager.requestLocationUpdates(best, 50, 0, this);
 
-        if (locationManager !=null ) {
+        if (locationManager != null) {
             lastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
-            if (lastLocation == null){
-                lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }
+        if (lastLocation == null) {
+            lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
 
-        if (lastLocation != null){
+        if (lastLocation != null) {
             endLat = lastLocation.getLatitude();
             endLong = lastLocation.getLongitude();
         }
@@ -273,11 +239,11 @@ public class ViewMain extends View implements SensorEventListener,
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        pointOfInterests= listOfPOI;
+        pointOfInterests = listOfPOI;
 
         float[] dist = new float[1];
-        int [] distance = new int [ pointOfInterests.size()];
-        int [] counter = new int[ pointOfInterests.size()];
+        int[] distance = new int[pointOfInterests.size()];
+        int[] counter = new int[pointOfInterests.size()];
 
         float[] distForCompass = new float[1];
         int distanceForCompass;
@@ -289,92 +255,59 @@ public class ViewMain extends View implements SensorEventListener,
 
         WindowManager wm = (WindowManager) context.getSystemService(Activity.WINDOW_SERVICE);
         int screenRotation = wm.getDefaultDisplay().getRotation();
-        int konstx =0;
+        int konstx = 0;
         int konsty = 0;
 
         switch (screenRotation) {
             case Surface.ROTATION_0:
                 konstx = (int) (canvasWidth / horizontalFOV);
-                konsty = (int) (canvasHeight/ verticalFOV);
-                mathTan = (float) ((float) Math.tan(Math.toRadians(horizontalFOV/2))+ 0.1);
+                konsty = (int) (canvasHeight / verticalFOV);
+                mathTan = (float) ((float) Math.tan(Math.toRadians(horizontalFOV / 2)) + 0.1);
                 axisX = SensorManager.AXIS_X;
                 axisY = SensorManager.AXIS_Z;
                 break;
             case Surface.ROTATION_90: // rotation to left
-                konstx = (int) (canvasHeight/ horizontalFOV);
+                konstx = (int) (canvasHeight / horizontalFOV);
                 konsty = (int) (canvasWidth / verticalFOV);
-                mathTan = (float) ((float) Math.tan(Math.toRadians(horizontalFOV/2))+ 0.7);
+                mathTan = (float) ((float) Math.tan(Math.toRadians(horizontalFOV / 2)) + 0.7);
                 axisX = SensorManager.AXIS_Z;
                 axisY = SensorManager.AXIS_MINUS_X;
                 break;
             case Surface.ROTATION_270: // rotation to right
-                konstx = (int) (canvasHeight/ horizontalFOV);
+                konstx = (int) (canvasHeight / horizontalFOV);
                 konsty = (int) (canvasWidth / verticalFOV);
-                mathTan = (float) ((float) Math.tan(Math.toRadians(horizontalFOV/2))+ 0.7);
+                mathTan = (float) ((float) Math.tan(Math.toRadians(horizontalFOV / 2)) + 0.7);
                 axisX = SensorManager.AXIS_MINUS_Z;
                 axisY = SensorManager.AXIS_X;
                 break;
 
         }
-
-
-
-
-        /**
-         * This loop is used to calculate the distance between the phone and every POI( point of interest)
-         * void distanceBetween (double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results)
-         *
-         * The result of location.distanceBetween we need is located in the first place of variable dist( dist[0])
-         *
-         * Variable counter is used further in code, and will be better explained there
-         *
-         */
-        for ( int i=0; i < pointOfInterests.size(); i++)
-        {
-            Location.distanceBetween( pointOfInterests.get(i).getLatitude(),
-                    pointOfInterests.get(i).getLongitude(), endLat, endLong, dist );
+        for (int i = 0; i < pointOfInterests.size(); i++) {
+            Location.distanceBetween(pointOfInterests.get(i).getLatitude(),
+                    pointOfInterests.get(i).getLongitude(), endLat, endLong, dist);
             counter[i] = i;
             distance[i] = (int) dist[0];
 
         }
-
-        /**
-         * This loop is used to tell the user that the GPS location isn't found, and to wait for it
-         */
-        if (lastLocation == null)
-        {
+        if (lastLocation == null) {
             canvas.save();
 
-            canvas.drawRect((canvas.getWidth() / 2) - 300, (canvas.getHeight()/2 ) - 80 , (canvas.getWidth() / 2) + 300,(canvas.getHeight()/2 ) +  80, roundRec);
-            canvas.drawRect((canvas.getWidth() / 2) - 300, (canvas.getHeight()/2 ) - 80, (canvas.getWidth() / 2) + 300,(canvas.getHeight()/2 ) +  80, borderRec);
-            canvas.drawText("Wait for GPS to locate you", canvas.getWidth() / 2 , canvas.getHeight()/2 , textPaint);
+            canvas.drawRect((canvas.getWidth() / 2) - 300, (canvas.getHeight() / 2) - 80, (canvas.getWidth() / 2) + 300, (canvas.getHeight() / 2) + 80, roundRec);
+            canvas.drawRect((canvas.getWidth() / 2) - 300, (canvas.getHeight() / 2) - 80, (canvas.getWidth() / 2) + 300, (canvas.getHeight() / 2) + 80, borderRec);
+            canvas.drawText("Wait for GPS to locate you", canvas.getWidth() / 2, canvas.getHeight() / 2, textPaint);
 
             canvas.restore();
         }
 
-        if ( lastLocation != null) {
-
-            /**
-             * Because of the way canvas.draw works i need to put the farthest point first, because it will be drawn first,
-             * and then over it the second point, and so on.
-             * In the first place in distance[] is the value with biggest distance from the phone
-             * because I need to draw the smallest distance last. That why the closest POI will be visible on the screen.
-             *
-             * counter[] is used to know which POI is in which place in distance[], because i want to give the right POI
-             * the right value of distance
-             *
-             */
-            for (int z=0; z < pointOfInterests.size(); z++)
-            {
-                for (int j=z+1; j<pointOfInterests.size(); j++)
-                {
+        if (lastLocation != null) {
+            for (int z = 0; z < pointOfInterests.size(); z++) {
+                for (int j = z + 1; j < pointOfInterests.size(); j++) {
                     int a = distance[z];
                     int b = distance[j];
 
                     int c = counter[z];
                     int d = counter[j];
-                    if (a < b)
-                    {
+                    if (a < b) {
                         distance[z] = b;
                         distance[j] = a;
 
@@ -383,28 +316,7 @@ public class ViewMain extends View implements SensorEventListener,
                     }
                 }
             }
-
-            /**
-             * float bearingTo (Location dest)
-             *
-             * Returns the approximate initial bearing in degrees East of true North when traveling
-             * along the shortest path between this location and the given location.
-             * The shortest path is defined using the WGS84 ellipsoid.
-             * Locations that are (nearly) antipodal may produce meaningless results.
-             *
-             * Absolute bearing refers to the angle between the magnetic North (magnetic bearing)
-             * or true North (true bearing) and an object.
-             * For example, an object to the East would have an absolute bearing of 90 degrees.
-             * Relative bearing refers to the angle between the craft's forward direction,
-             * and the location of another object. For example, an object relative bearing of 0 degrees would be dead ahead;
-             * an object relative bearing 180 degrees would be behind.
-             * [1] Bearings can be measured in mils or degrees.
-             */
-            /**
-
-             **/
-            for (int i=0; i < pointOfInterests.size(); i++)
-            {
+            for (int i = 0; i < pointOfInterests.size(); i++) {
                 Location temp = new Location("manual");
                 temp.setLatitude(pointOfInterests.get(i).getLatitude());
                 temp.setLongitude(pointOfInterests.get(i).getLongitude());
@@ -413,233 +325,91 @@ public class ViewMain extends View implements SensorEventListener,
                 listOfBearingTo.add(lastLocation.bearingTo(temp));
 
             }
-
-
-
-            /**
-             * boolean getRotationMatrix (float[] R, float[] I, float[] gravity, float[] geomagnetic)
-             *
-             * Computes the inclination matrix I as well as the rotation matrix R
-             * transforming a vector from the device coordinate system to the world's coordinate system
-             * which is defined as a direct orthonormal basis, where:
-             *
-             * X is defined as the vector product Y.Z (It is tangential to the ground at the device's current location and roughly points East).
-             * Y is tangential to the ground at the device's current location and points towards the magnetic North Pole.
-             * Z points towards the sky and is perpendicular to the ground.
-             *
-             * I don't use getRotationMatrix because i get bad data.
-             * We can also use lastGravity instead lastAccelerometer.
-             */
-
-            //SensorManager.getRotationMatrix(rotation, identity, lastGravity, lastCompass);
-
-            /**
-             * void getRotationMatrixFromVector (float[] R, float[] rotationVector)
-             *
-             * Helper function to convert a rotation vector to a rotation matrix.
-             * Given a rotation vector (presumably from a ROTATION_VECTOR sensor),
-             * returns a 9 or 16 element rotation matrix in the array R. R must have length 9 or 16.
-             * If R.length == 9, the following matrix is returned:
-             */
-
             SensorManager.getRotationMatrixFromVector(rotation, lastRotationVector);
-
-            /**
-             * boolean remapCoordinateSystem (float[] inR, int X, int Y, float[] outR)
-             *
-             * Rotates the supplied rotation matrix so it is expressed in a different coordinate system.
-             * This is typically used when an application needs to compute the three orientation angles of the device
-             * (see getOrientation(float[], float[])) in a different coordinate system.
-             * When the rotation matrix is used for drawing (for instance with OpenGL ES),
-             * it usually doesn't need to be transformed by this function,
-             * unless the screen is physically rotated, in which case you can use Display.getRotation()
-             * to retrieve the current rotation of the screen.
-             * Note that because the user is generally free to rotate their screen,
-             * you often should consider the rotation in deciding the parameters to use here.
-             */
-
             SensorManager.remapCoordinateSystem(rotation, axisX, axisY, cameraRotation);
-
-            /**
-             * float[] getOrientation (float[] R, float[] values)
-             * Computes the device's orientation based on the rotation matrix.
-             *
-             * When it returns, the array values are as follows:
-             *
-             * values[0]: Azimuth, angle of rotation about the -z axis.
-             * This value represents the angle between the device's y axis and the magnetic north pole.
-             * When facing north, this angle is 0, when facing south, this angle is π.
-             * Likewise, when facing east, this angle is π/2, and when facing west, this angle is -π/2.
-             * The range of values is -π to π.
-             *
-             * values[1]: Pitch, angle of rotation about the x axis.
-             * This value represents the angle between a plane parallel to the device's screen
-             * and a plane parallel to the ground.
-             * Assuming that the bottom edge of the device faces the user and that the screen is face-up,
-             * tilting the top edge of the device toward the ground creates a positive pitch angle.
-             * The range of values is -π to π.
-             *
-             * values[2]: Roll, angle of rotation about the y axis.
-             * This value represents the angle between a plane perpendicular to the device's screen
-             * and a plane perpendicular to the ground.
-             * Assuming that the bottom edge of the device faces the user and that the screen is face-up,
-             * tilting the left edge of the device toward the ground creates a positive roll angle.
-             * The range of values is -π/2 to π/2.
-             *
-             * Applying these three rotations in the azimuth, pitch, roll order transforms an identity matrix
-             * to the rotation matrix passed into this method.
-             * Also, note that all three orientation angles are expressed in radians.
-             */
 
             SensorManager.getOrientation(cameraRotation, orientationAplha);
             orientation = lowPass(orientationAplha, orientation);
 
 
+            for (int i = 0; i < pointOfInterests.size(); i++) {
+                if (distance[i] < 50) {
+                    POIHight = 0;
+                } else if (distance[i] < 100) {
+                    POIHight = 40;
+                } else if (distance[i] < 150) {
+                    POIHight = 80;
+                } else if (distance[i] < 200) {
+                    POIHight = 120;
+                } else if (distance[i] > 200) {
+                    POIHight = 160;
+                }
 
-            for ( int i=0; i < pointOfInterests.size(); i++)
-            {
-                /**
-                 * Here i check the distance between the phone and POI. For every distance i have a value that
-                 * is used to put the farthest point highest on the screen.
-                 */
-                if (distance[i]<50)
-                {POIHight = 0;}
-                else if (distance[i]<100)
-                {POIHight = 40;}
-                else if (distance[i]<150)
-                {POIHight = 80;}
-                else if (distance[i]<200)
-                {POIHight = 120;}
-                else if (distance[i]>200)
-                {POIHight = 160;}
-
-                /**
-                 * This is to check the length of the text, so if the text is longer, the rectangle in which i show the texts
-                 * is longer as well.
-                 */
                 textHeight = textPaint.descent() - textPaint.ascent();
                 textOffset = (textHeight / 2) - textPaint.descent();
                 textlength = pointOfInterests.get(counter[i]).getName().length();
 
                 canvas.save();
-
-                /**
-                 * This is to get the name of the location that the point shows, and to get distance to that point
-                 */
-
                 String mytext = pointOfInterests.get(counter[i]).getName();
                 String mytext2 = String.valueOf(distance[i]);
-
-                /**
-                 *  canvas.rotate() is used because if I apply roll to the phone i want my picture to always stay parallel
-                 *  to the ground no mather the phone angle about y/z axis. I have to set the point around which my POI will rotate.
-                 */
-
-                canvas.rotate((float) (0.0f-Math.toDegrees(orientation[2])), (float)canvasWidth/2,(float)canvasHeight/2 + bmpHeight);
-
-
-                /**
-                 *  This is the heart of this app. Here i set the coordinates of the point on the screen.
-                 *  konstx = canvasWidth/ horizontalFOV, canvasWidth is the width of the screen and horizontalFOv is the field
-                 *  of view of the camera in degrees.
-                 *
-                 *  orientation[0] is how much the phone is oriented from true North. If i lower that with the bearing of the point
-                 *  i need i can get a value. That value shows how is my phone oriented from the point in degree.
-                 *
-                 */
-
-                float dx = (float) ((konstx) * ( Math.toDegrees(orientation[0]) - listOfBearingTo.get(counter[i])));
-                float dy = (float) ((konsty ) * Math.toDegrees(orientation[1]) /3);
-
-
-                /**
-                 * Canvas.translate is used because i don't won't to calculate translation between 2 or more objects.
-                 * I wont to start from the begining for every point.
-                 */
-                // wait to translate the dx so the horizon doesn't get pushed off
+                canvas.rotate((float) (0.0f - Math.toDegrees(orientation[2])), (float) canvasWidth / 2, (float) canvasHeight / 2 + bmpHeight);
+                float dx = (float) ((konstx) * (Math.toDegrees(orientation[0]) - listOfBearingTo.get(counter[i])));
+                float dy = (float) ((konsty) * Math.toDegrees(orientation[1]) / 3);
                 canvas.translate(0.0f, 0.0f - dy);
-
-                // now translate the dx
                 canvas.translate(0.0f - dx, 0.0f);
+                canvas.drawRect((float) ((canvasWidth / 2) - (textOffset * 20)) - 2, (float) ((canvasHeight / 2) - 50 - POIHight), (float) ((canvasWidth / 2) + (textOffset * 20)), (float) ((canvasHeight / 2) + 110 - POIHight), roundRec);
+                canvas.drawRect((float) ((canvasWidth / 2) - (textOffset * 20)) - 2, (float) ((canvasHeight / 2) - 50 - POIHight), (float) ((canvasWidth / 2) + (textOffset * 20)), (float) ((canvasHeight / 2) + 110 - POIHight), borderRec);
+                canvas.drawText(mytext, (float) (canvasWidth / 2), (float) (canvasHeight / 2 - POIHight), textPaint);
+                canvas.drawText(mytext2 + " meters ", (float) (canvasWidth / 2), (float) ((canvasHeight / 2) + 40f - POIHight), textPaint);
+                canvas.drawText(pointOfInterests.get(counter[i]).getOpeningHours() != null && pointOfInterests.get(counter[i]).getOpeningHours().getOpenNow() ? "Opened" : "Closed", (float) (canvasWidth / 2), (float) ((canvasHeight / 2) + 80f - POIHight), textPaint);
 
-
-                // draw rectangle  ( left , top, right, bottom)
-                canvas.drawRect((float) ((canvasWidth / 2) - ( textOffset * 20 )), (float) ((canvasHeight/ 2 ) - 50 - POIHight), (float) ((canvasWidth / 2) + ( textOffset * 20 )), (float) ((canvasHeight/ 2 ) + 80 - POIHight), roundRec);
-
-                // draw border rectangle
-                canvas.drawRect((float) ((canvasWidth / 2) - ( textOffset * 20 )), (float) ((canvasHeight/ 2 ) - 50 - POIHight), (float) ((canvasWidth / 2) + ( textOffset * 20 )), (float) ((canvasHeight/ 2 ) + 80 - POIHight), borderRec);
-
-
-                // draw text
-                canvas.drawText(mytext, (float) (canvasWidth / 2), (float) (canvasHeight/2 - POIHight), textPaint);
-                canvas.drawText(mytext2 +" meters ", (float) (canvasWidth / 2), (float) ((canvasHeight/ 2 ) + 40f - POIHight), textPaint);
-
-
-                // draw my drawable picture
-                //canvas.drawBitmap ( bmp, ((float) (canvasWidth/2)) - 36 * 5, ((float )canvasHeight/2)- 95 * 4 - POIHight, null);
-                canvas.drawBitmap(bmp, (float) (canvasWidth/2)-(bmpWidth/2),(float) (canvasHeight/2) - bmpHeight - POIHight - (bmpHeight/3),null);
-
-                /**
-                 * canvas.save() and canvas.restore() is almost the same as the canvas.translate(). It is used so i don't
-                 * need to calculate how far i need to draw one point from another, i can just start from scratch
-                 *
-                 */
-
+                canvas.drawBitmap(icon, (float) ((canvasWidth / 2) - (textOffset * 20)) - iconWidth, (float) ((canvasHeight / 2) - 56 - POIHight), null);
                 canvas.restore();
 
-                /**
-                 * Here i draw my compass/radar, and set it's rotation around it's center
-                 */
-
-                float radarLineX = (bmpCompassHeight/2) * mathTan;
+                float radarLineX = (bmpCompassHeight / 2) * mathTan;
 
                 compasBearing = (float) Math.toDegrees(orientation[0]);
-                if(compasBearing<0){
+                if (compasBearing < 0) {
                     compasBearing += 360;
                 }
-                int rotateCompas = (int) (360-compasBearing);
+                int rotateCompas = (int) (360 - compasBearing);
 
                 canvas.save();
 
                 Matrix transform = new Matrix();
-                transform.setRotate(rotateCompas,bmpCompassWidth/2, bmpCompassHeight/2);
-                transform.postTranslate((float) canvasWidth-bmpCompassWidth, 0);
-                canvas.drawBitmap(bmpCompass,transform, compassPaint);
+                transform.setRotate(rotateCompas, bmpCompassWidth / 2, bmpCompassHeight / 2);
+                transform.postTranslate((float) canvasWidth - bmpCompassWidth, 0);
+                canvas.drawBitmap(bmpCompass, transform, compassPaint);
 
-                canvas.drawLine((float)canvasWidth-(bmpCompassWidth/2), bmpCompassWidth/2,(float)canvasWidth - (bmpCompassWidth/2) + radarLineX,0, linePaint);
-                canvas.drawLine((float)canvasWidth-(bmpCompassWidth/2), bmpCompassWidth/2,(float)canvasWidth - (bmpCompassWidth/2) - radarLineX,0, linePaint);
+                canvas.drawLine((float) canvasWidth - (bmpCompassWidth / 2), bmpCompassWidth / 2, (float) canvasWidth - (bmpCompassWidth / 2) + radarLineX, 0, linePaint);
+                canvas.drawLine((float) canvasWidth - (bmpCompassWidth / 2), bmpCompassWidth / 2, (float) canvasWidth - (bmpCompassWidth / 2) - radarLineX, 0, linePaint);
 
                 canvas.restore();
                 canvas.save();
 
-                /**
-                 * Here i draw my points for radar, if the distance of the point is bigger than the radarRange, the point
-                 * won't be drawn
-                 */
+                for (int j = 0; j < pointOfInterests.size(); j++) {
 
-                for (int j = 0; j < pointOfInterests.size(); j++){
-
-                    Location.distanceBetween( pointOfInterests.get(j).getLatitude(),
-                            pointOfInterests.get(j).getLongitude(), endLat, endLong, distForCompass );
+                    Location.distanceBetween(pointOfInterests.get(j).getLatitude(),
+                            pointOfInterests.get(j).getLongitude(), endLat, endLong, distForCompass);
                     distanceForCompass = (int) distForCompass[0];
 
 
-                    if (distanceForCompass < radarRange){
-                        POIBearing = (float) Math.toDegrees( orientation[0])-listOfBearingTo.get(j);
-                        if (POIBearing < 0){
+                    if (distanceForCompass < radarRange) {
+                        POIBearing = (float) Math.toDegrees(orientation[0]) - listOfBearingTo.get(j);
+                        if (POIBearing < 0) {
                             POIBearing += 360;
                         }
 
 
-                        int rotatePOI = (int) (360- POIBearing);
-                        POIWidth =  (((bmpCompassWidth/2)/radarRange) * distanceForCompass);
+                        int rotatePOI = (int) (360 - POIBearing);
+                        POIWidth = (((bmpCompassWidth / 2) / radarRange) * distanceForCompass);
 
                         canvas.save();
 
                         Matrix transformPOI = new Matrix();
-                        transformPOI.setTranslate((float) (canvasWidth-(bmpCompassWidth/2)-(bmpPoinwWidth/2)),  ((bmpCompassHeight/2)-POIWidth));
-                        transformPOI.postRotate(rotatePOI,(float) (canvasWidth-(bmpCompassWidth/2)),  ((bmpCompassHeight/2)));
-                        canvas.drawBitmap(bmpPoint,transformPOI,null);
+                        transformPOI.setTranslate((float) (canvasWidth - (bmpCompassWidth / 2) - (bmpPoinwWidth / 2)), ((bmpCompassHeight / 2) - POIWidth));
+                        transformPOI.postRotate(rotatePOI, (float) (canvasWidth - (bmpCompassWidth / 2)), ((bmpCompassHeight / 2)));
+                        canvas.drawBitmap(bmpPoint, transformPOI, null);
 
                         canvas.restore();
                     }
@@ -649,31 +419,33 @@ public class ViewMain extends View implements SensorEventListener,
         }
     }
 
-    public void showWindow(View parent, int i){
-
+    public void showWindow(View parent, int i) {
+        int numStars = 5;
+        Log.d(DEBUG_TAG, "showWindow");
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.pop_up_show, null);
         popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        TextView opisTxt = (TextView) popupView.findViewById(R.id.opis_txt);
-        TextView dataTxt = (TextView) popupView.findViewById(R.id.data_txt);
+        TextView placeName = (TextView) popupView.findViewById(R.id.placeName);
+        TextView placeDescription = (TextView) popupView.findViewById(R.id.placeDescription);
+        TextView openingHours = (TextView) popupView.findViewById(R.id.openingHours);
+        RatingBar ratingBar = (RatingBar) popupView.findViewById(R.id.ratingBar);
 
+        ratingBar.setRating(pointOfInterests.get(i).getRating()!=null ? (pointOfInterests.get(i).getRating()).floatValue() : 0.0f);
+        image = (ImageView) popupView.findViewById(R.id.image);
+        image.setImageResource(R.drawable.enjoy);
         popupWindow.showAtLocation(parent, android.view.Gravity.CENTER, android.view.Gravity.CENTER, android.view.Gravity.CENTER);
         popupWindow.setAnimationStyle(android.R.style.Animation_Toast);
-        // popupWindow.getBackground();
         popupWindow.setFocusable(true);
         popupWindow.update();
 
 
-        opisTxt.setText("Details: ");
-        opisTxt.setTextSize(6 * context.getResources().getDisplayMetrics().density);
-        opisTxt.setTextAlignment(TEXT_ALIGNMENT_CENTER);
+        placeName.setText(pointOfInterests.get(i).getName());
+        placeDescription.setText(pointOfInterests.get(i).getName());
+        openingHours.setText(pointOfInterests.get(i).getOpeningHours() != null && pointOfInterests.get(i).getOpeningHours().getOpenNow() ? "Opened" : "Closed");
 
-        dataTxt.setText(pointOfInterests.get(i).getName());
-        dataTxt.setTextSize(4 * context.getResources().getDisplayMetrics().density);
-
-        dataTxt.setOnClickListener(new OnClickListener() {
+        placeDescription.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
@@ -682,35 +454,36 @@ public class ViewMain extends View implements SensorEventListener,
 
     }
 
-    public boolean onTouchEvent (MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
         float x = event.getX();
         float y = event.getY();
 
-        switch (action){
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
-                for (int i=0; i< pointOfInterests.size(); i++){
+                for (int i = 0; i < pointOfInterests.size(); i++) {
 
                     float dx = (float) ((canvasWidth / horizontalFOV) * (Math.toDegrees(orientation[0]) - listOfBearingTo.get(i)));
-                    float dy = (float) ((canvasHeight / verticalFOV ) * Math.toDegrees(orientation[1]) /3);
+                    float dy = (float) ((canvasHeight / verticalFOV) * Math.toDegrees(orientation[1]) / 3);
 
                     float[] dist = new float[1];
-                    int  distance ;
+                    int distance;
 
-                    Location.distanceBetween( pointOfInterests.get(i).getLatitude(),
-                            pointOfInterests.get(i).getLongitude(), endLat, endLong, dist );
+                    Location.distanceBetween(pointOfInterests.get(i).getLatitude(),
+                            pointOfInterests.get(i).getLongitude(), endLat, endLong, dist);
                     distance = (int) dist[0];
 
-                    if (distance<50)
-                    {POIHight = 0;}
-                    else if (distance<100)
-                    {POIHight = 40;}
-                    else if (distance<150)
-                    {POIHight = 80;}
-                    else if (distance<200)
-                    {POIHight = 120;}
-                    else if (distance>200)
-                    {POIHight = 160;}
+                    if (distance < 50) {
+                        POIHight = 0;
+                    } else if (distance < 100) {
+                        POIHight = 40;
+                    } else if (distance < 150) {
+                        POIHight = 80;
+                    } else if (distance < 200) {
+                        POIHight = 120;
+                    } else if (distance > 200) {
+                        POIHight = 160;
+                    }
 
                     textHeight = textPaint.descent() - textPaint.ascent();
                     textOffset = (textHeight / 2) - textPaint.descent();
@@ -718,10 +491,10 @@ public class ViewMain extends View implements SensorEventListener,
 
                     // canvas.drawBitmap ( bmp, (canvas.getWidth()/2) - 36 * 5, (canvas.getHeight()/2)- 95 * 4 - POIHight, null);
 
-                    if (x >=( ((canvasWidth/2) -dx) - 36*5) && x < ((canvasWidth/2)-dx -(36*5)+ 200)   && y >=((canvasHeight/2)-dy - (95*4) - POIHight-50 ) && y <((canvasHeight/2)-dy - (95*4) - POIHight +400)) {
+                    if (x >= (((canvasWidth / 2) - dx) - 36 * 5) && x < ((canvasWidth / 2) - dx - (36 * 5) + 200) && y >= ((canvasHeight / 2) - dy - (95 * 4) - POIHight - 50) && y < ((canvasHeight / 2) - dy - (95 * 4) - POIHight + 400)) {
 
                         //  Toast.makeText(context, pointOfInterests.get(i).getPlaces(), Toast.LENGTH_SHORT).show();
-                        showWindow(this,i);
+                        showWindow(this, i);
 
                     }
 
@@ -740,9 +513,7 @@ public class ViewMain extends View implements SensorEventListener,
     }
 
     public void onSensorChanged(SensorEvent event) {
-        /**
-         * Here i get the values of the sensors i need
-         */
+        
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 lastAccelerometer = event.values.clone();
@@ -773,9 +544,7 @@ public class ViewMain extends View implements SensorEventListener,
     }
 
     public void onLocationChanged(Location location) {
-        /**
-         * If the location of my phone is changed i need to get the new location
-         */
+        
         // store it off for use when we need it
         lastLocation = location;
         endLat = location.getLatitude();

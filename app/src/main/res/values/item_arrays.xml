@@ -11,8 +11,8 @@
         <item>@drawable/money</item>
     </array>
     <array name="placesType">
-        <item>food</item>
-        <item>park|museum|movie_theater</item>
-        <item>bank|atm</item>
+        <item>restaurant</item>
+        <item>park</item>
+        <item>bank</item>
     </array>
 </resources>
