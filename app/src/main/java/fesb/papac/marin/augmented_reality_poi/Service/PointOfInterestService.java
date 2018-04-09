@@ -11,5 +11,8 @@ import fesb.papac.marin.augmented_reality_poi.Model.PointOfInterest;
 public interface PointOfInterestService {
 
     void getPlacesByType(PointOfInterest poi);
+
      ArrayList<PointOfInterest> getListOfPOI();
+
+     PointOfInterest getDetailsOfPlace(String placeID);
 }

@@ -16,16 +16,16 @@ import java.util.List;
 
 
 
-public class DisplayView extends SurfaceView implements
+public class CameraView extends SurfaceView implements
         SurfaceHolder.Callback {
 
-    DisplayView arView;
+    CameraView arView;
     SurfaceHolder holder;
     Camera camera;
     int screenWidth, screenHeight;
     int rotation;
 
-    public DisplayView(Context context) {
+    public CameraView(Context context) {
         super(context);
 
         Context mcontext = context;

@@ -3,7 +3,9 @@ package fesb.papac.marin.augmented_reality_poi.View;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -20,6 +22,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextPaint;
 import android.util.Log;
@@ -34,12 +38,16 @@ import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.Places;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fesb.papac.marin.augmented_reality_poi.Controller.PointOfInterestController;
+import fesb.papac.marin.augmented_reality_poi.Controllers.GooglePlayServicesAPI;
+import fesb.papac.marin.augmented_reality_poi.Controllers.PointOfInterestController;
 import fesb.papac.marin.augmented_reality_poi.Helper.PaintUtils;
 import fesb.papac.marin.augmented_reality_poi.Model.Geometry;
 import fesb.papac.marin.augmented_reality_poi.Model.LocationJSN;
@@ -49,7 +57,7 @@ import fesb.papac.marin.augmented_reality_poi.R;
 
 
 public class ViewMain extends View implements SensorEventListener,
-        LocationListener {
+        LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     double canvasWidth, canvasHeight;
     float compasBearing, POIBearing;
@@ -149,7 +157,6 @@ public class ViewMain extends View implements SensorEventListener,
 
         axisX = SensorManager.AXIS_X;
         axisY = SensorManager.AXIS_Z;
-
 
         startSensors();
         startGPS();
@@ -421,6 +428,7 @@ public class ViewMain extends View implements SensorEventListener,
 
     public void showWindow(View parent, int i) {
         int numStars = 5;
+        final List<PlacePhotoMetadata>[] photos = new List[0];
         Log.d(DEBUG_TAG, "showWindow");
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = layoutInflater.inflate(R.layout.pop_up_show, null);
@@ -431,6 +439,7 @@ public class ViewMain extends View implements SensorEventListener,
         TextView placeDescription = (TextView) popupView.findViewById(R.id.placeDescription);
         TextView openingHours = (TextView) popupView.findViewById(R.id.openingHours);
         RatingBar ratingBar = (RatingBar) popupView.findViewById(R.id.ratingBar);
+        PointOfInterestController poiController = new PointOfInterestController(context);
 
         ratingBar.setRating(pointOfInterests.get(i).getRating()!=null ? (pointOfInterests.get(i).getRating()).floatValue() : 0.0f);
         image = (ImageView) popupView.findViewById(R.id.image);
@@ -440,18 +449,17 @@ public class ViewMain extends View implements SensorEventListener,
         popupWindow.setFocusable(true);
         popupWindow.update();
 
-
         placeName.setText(pointOfInterests.get(i).getName());
         placeDescription.setText(pointOfInterests.get(i).getName());
         openingHours.setText(pointOfInterests.get(i).getOpeningHours() != null && pointOfInterests.get(i).getOpeningHours().getOpenNow() ? "Opened" : "Closed");
 
-        placeDescription.setOnClickListener(new OnClickListener() {
+       /* placeDescription.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 popupWindow.dismiss();
             }
         });
-
+*/
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -494,8 +502,11 @@ public class ViewMain extends View implements SensorEventListener,
                     if (x >= (((canvasWidth / 2) - dx) - 36 * 5) && x < ((canvasWidth / 2) - dx - (36 * 5) + 200) && y >= ((canvasHeight / 2) - dy - (95 * 4) - POIHight - 50) && y < ((canvasHeight / 2) - dy - (95 * 4) - POIHight + 400)) {
 
                         //  Toast.makeText(context, pointOfInterests.get(i).getPlaces(), Toast.LENGTH_SHORT).show();
-                        showWindow(this, i);
-
+                        //showWindow(this, i);
+                        Intent intent = new Intent(context, PlaceDetailActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(PlaceDetailActivity.PLACES_ID,pointOfInterests.get(i).getPlaceId());
+                        context.startActivity(intent);
                     }
 
                 }
@@ -594,5 +605,20 @@ public class ViewMain extends View implements SensorEventListener,
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

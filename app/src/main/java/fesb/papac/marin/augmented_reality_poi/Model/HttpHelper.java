@@ -21,6 +21,9 @@ public class HttpHelper {
     @SerializedName("results")
     @Expose
     private List<PointOfInterest> results = new ArrayList<PointOfInterest>();
+    @SerializedName("result")
+    @Expose
+    private PointOfInterest result;
     @SerializedName("status")
     @Expose
     private String status;
@@ -95,5 +98,13 @@ public class HttpHelper {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public PointOfInterest getResult() {
+        return result;
+    }
+
+    public void setResult(PointOfInterest result) {
+        this.result = result;
     }
 }

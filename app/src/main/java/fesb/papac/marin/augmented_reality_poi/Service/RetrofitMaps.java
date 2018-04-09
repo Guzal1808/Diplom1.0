@@ -14,4 +14,8 @@ public interface RetrofitMaps {
     @GET("api/place/nearbysearch/json?sensor=true")
     Call<HttpHelper> getNearbyPlaces(@Query("location") String location, @Query("radius") String radius, @Query("type") String type, @Query("key") String key);
 
+    @GET("api/place/details/json?")
+    Call<HttpHelper> getDetailsOfPlace(@Query("placeid") String placeid,@Query("key") String key);
+
+
 }

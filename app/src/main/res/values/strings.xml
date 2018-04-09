@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">AugmentedPOI</string>
-    <string name="GOOGLEAPI_KEY">AIzaSyBPkUvg6Xz17H4uK5rBl-Hf7K7ItOvjCUA</string>
+    <string name="GOOGLEAPI_KEY">AIzaSyBq8yJ4I36zePlooPdERim4id66b6apSSg</string>
+    <string name="DETAILS_KEY">AIzaSyBq8yJ4I36zePlooPdERim4id66b6apSSg</string>
+    <string name="PHOTO_KEY">AIzaSyBq8yJ4I36zePlooPdERim4id66b6apSSg</string>
     <string name="SEARCHING_RADIUS">500</string>
 </resources>

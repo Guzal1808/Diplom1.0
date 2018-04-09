@@ -1,6 +1,8 @@
 package fesb.papac.marin.augmented_reality_poi.View;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +30,7 @@ import fesb.papac.marin.augmented_reality_poi.R;
  * Created by Dementor on 04.03.2018.
  */
 
-public class CardActivity extends AppCompatActivity {
+public class CardActivity extends AppCompatActivity{
 
     private DrawerLayout mDrawerLayout;
 
@@ -46,6 +52,8 @@ public class CardActivity extends AppCompatActivity {
 ////        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 //        // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
+
+
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
                     = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
@@ -125,4 +133,5 @@ public class CardActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         return super.onOptionsItemSelected(item);
     }
+
 }

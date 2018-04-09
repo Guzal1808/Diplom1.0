@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout ViewPane2 = (FrameLayout) findViewById(R.id.ar_view_pane_2);
         FrameLayout ViewPane3 = (FrameLayout) findViewById(R.id.ar_view_pane_3);
 
-        DisplayView displayView1 = new DisplayView(this);
-        ViewPane3.addView(displayView1);
+        CameraView cameraView1 = new CameraView(this);
+        ViewPane3.addView(cameraView1);
 
        Content = new ViewMain(getApplicationContext(),getIntent().getStringExtra(EXTRA_POSITION));
 
