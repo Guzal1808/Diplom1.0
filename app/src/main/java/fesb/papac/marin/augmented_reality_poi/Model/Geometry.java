@@ -12,11 +12,35 @@ public class Geometry {
     @Expose
     private LocationJSN location;
 
+    @SerializedName("elevation")
+    @Expose
+    private String elevation;
+
+    @SerializedName("resolution")
+    @Expose
+    private String resolution;
+
     public LocationJSN getLocation() {
         return location;
     }
 
     public void setLocation(LocationJSN location) {
         this.location = location;
+    }
+
+    public String getElevation() {
+        return elevation;
+    }
+
+    public void setElevation(String elevation) {
+        this.elevation = elevation;
+    }
+
+    public String getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
     }
 }

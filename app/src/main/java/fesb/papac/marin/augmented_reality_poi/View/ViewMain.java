@@ -426,42 +426,6 @@ public class ViewMain extends View implements SensorEventListener,
         }
     }
 
-    public void showWindow(View parent, int i) {
-        int numStars = 5;
-        final List<PlacePhotoMetadata>[] photos = new List[0];
-        Log.d(DEBUG_TAG, "showWindow");
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View popupView = layoutInflater.inflate(R.layout.pop_up_show, null);
-        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        TextView placeName = (TextView) popupView.findViewById(R.id.placeName);
-        TextView placeDescription = (TextView) popupView.findViewById(R.id.placeDescription);
-        TextView openingHours = (TextView) popupView.findViewById(R.id.openingHours);
-        RatingBar ratingBar = (RatingBar) popupView.findViewById(R.id.ratingBar);
-        PointOfInterestController poiController = new PointOfInterestController(context);
-
-        ratingBar.setRating(pointOfInterests.get(i).getRating()!=null ? (pointOfInterests.get(i).getRating()).floatValue() : 0.0f);
-        image = (ImageView) popupView.findViewById(R.id.image);
-        image.setImageResource(R.drawable.enjoy);
-        popupWindow.showAtLocation(parent, android.view.Gravity.CENTER, android.view.Gravity.CENTER, android.view.Gravity.CENTER);
-        popupWindow.setAnimationStyle(android.R.style.Animation_Toast);
-        popupWindow.setFocusable(true);
-        popupWindow.update();
-
-        placeName.setText(pointOfInterests.get(i).getName());
-        placeDescription.setText(pointOfInterests.get(i).getName());
-        openingHours.setText(pointOfInterests.get(i).getOpeningHours() != null && pointOfInterests.get(i).getOpeningHours().getOpenNow() ? "Opened" : "Closed");
-
-       /* placeDescription.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                popupWindow.dismiss();
-            }
-        });
-*/
-    }
-
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
         float x = event.getX();
@@ -497,7 +461,6 @@ public class ViewMain extends View implements SensorEventListener,
                     textOffset = (textHeight / 2) - textPaint.descent();
                     textlength = pointOfInterests.get(i).getName().length();
 
-                    // canvas.drawBitmap ( bmp, (canvas.getWidth()/2) - 36 * 5, (canvas.getHeight()/2)- 95 * 4 - POIHight, null);
 
                     if (x >= (((canvasWidth / 2) - dx) - 36 * 5) && x < ((canvasWidth / 2) - dx - (36 * 5) + 200) && y >= ((canvasHeight / 2) - dy - (95 * 4) - POIHight - 50) && y < ((canvasHeight / 2) - dy - (95 * 4) - POIHight + 400)) {
 

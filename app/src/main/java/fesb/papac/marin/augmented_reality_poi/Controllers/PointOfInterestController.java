@@ -2,12 +2,19 @@ package fesb.papac.marin.augmented_reality_poi.Controllers;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fesb.papac.marin.augmented_reality_poi.Model.ElevationHelper;
+import fesb.papac.marin.augmented_reality_poi.Model.Geometry;
 import fesb.papac.marin.augmented_reality_poi.Model.HttpHelper;
 import fesb.papac.marin.augmented_reality_poi.Model.PointOfInterest;
 import fesb.papac.marin.augmented_reality_poi.R;
@@ -58,6 +65,10 @@ public class PointOfInterestController implements PointOfInterestService {
                 try {
                     Log.d("onResponse", "Parse data");
                     listOfPOI.addAll(response.body().getResults());
+                    for (PointOfInterest point: listOfPOI) {
+                        setElevation(point);
+                    }
+
 
                 } catch (Exception e) {
                     Log.d("onResponse", "There is an error");
@@ -74,11 +85,41 @@ public class PointOfInterestController implements PointOfInterestService {
 
     @Override
     public ArrayList<PointOfInterest> getListOfPOI() {
+
         return listOfPOI;
     }
 
     @Override
-    public PointOfInterest getDetailsOfPlace(String placeID) {
+    public Geometry setElevation(PointOfInterest poi) {
+        final String KEY = context.getString(R.string.ELEVATION_KEY);
+        String locations = poi.getLatitude()+","+poi.getLongitude();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitMaps service = retrofit.create(RetrofitMaps.class);
+
+        Call<ElevationHelper> call = service.getElevation(locations, KEY);
+
+        call.enqueue(new Callback<ElevationHelper>() {
+            @Override
+            public void onResponse(Call<ElevationHelper> call, Response<ElevationHelper> response) {
+                Geometry geometry = response.body().getResults();
+                String g = geometry.getElevation();
+            }
+
+            @Override
+            public void onFailure(Call<ElevationHelper> call, Throwable t) {
+
+            }
+        });
+
+        return null;
+    }
+
+    @Override
+    public PointOfInterest getDetailsOfPlace(String placeID, View view) {
         final String KEY = context.getString(R.string.DETAILS_KEY);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -93,10 +134,30 @@ public class PointOfInterestController implements PointOfInterestService {
         call.enqueue(new Callback<HttpHelper>() {
             @Override
             public void onResponse(Call<HttpHelper> call, Response<HttpHelper> response) {
-                PointOfInterest result = response.body().getResult();
-                if (result!=null) {
-                    String tre = result.getFormatted_address();
-                    String er = result.getInternational_phone_number();
+                assert response.body() != null;
+                PointOfInterest place = response.body().getResult();
+                String path="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=";
+                String photoKey = context.getString(R.string.PHOTO_KEY);
+                String fullPath = path+place.getPhotos().get(0).getPhotoReference()+"&key="+photoKey;
+                if (place!=null) {
+                    ImageView ivPlacePhoto = view.findViewById(R.id.card_image);
+                    Picasso.with(context)
+                            .load(fullPath)
+                            .into(ivPlacePhoto);
+                    TextView placeName = view.findViewById(R.id.placeName);
+                    TextView placeAddress = view.findViewById(R.id.placeAddress);
+                    TextView placeTelNo = view.findViewById(R.id.placeTelNo);
+                    TextView placeWebURL = view.findViewById(R.id.placeWebURL);
+                    RatingBar ratingBar =  view.findViewById(R.id.ratingBar);
+                    TextView openingHours =  view.findViewById(R.id.openingHours);
+
+                    placeName.setText(place.getName());
+                    placeAddress.setText(place.getFormatted_address());
+                    placeTelNo.setText(place.getInternational_phone_number());
+                    ratingBar.setRating(place.getRating()!=null ? place.getRating().floatValue() : 0.0f);
+                    placeWebURL.setText(place.getWebsite());
+                    openingHours.setText(place.getOpeningHours() != null && place.getOpeningHours().getOpenNow() ? "Opened" : "Closed");
+
                 }
                 else
                 {

@@ -17,6 +17,12 @@ import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
 import java.util.zip.Inflater;
@@ -30,10 +36,11 @@ import fesb.papac.marin.augmented_reality_poi.R;
  * Created by Гюзаль on 29.03.2018.
  */
 
-public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks,OnMapReadyCallback {
 
     GoogleApiClient mGoogleApiClient;
     public static final String PLACES_ID = "ID";
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,45 +48,11 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
         setContentView(R.layout.place_detail);
 
         final ImageView ivPlacePhoto = (ImageView) findViewById(R.id.card_image);
+        View view = this.findViewById(android.R.id.content);
 
         PointOfInterestController poiController = new PointOfInterestController(getApplicationContext());
-        poiController.getDetailsOfPlace(getIntent().getStringExtra(PLACES_ID));
+        poiController.getDetailsOfPlace(getIntent().getStringExtra(PLACES_ID), view);
 
-      /*  mGoogleApiClient = new GoogleApiClient
-                .Builder( this )
-                .enableAutoManage( this, 0, this )
-                .addApi( Places.GEO_DATA_API )
-                .addApi( Places.PLACE_DETECTION_API )
-                .addConnectionCallbacks( this )
-                .addOnConnectionFailedListener( this )
-                .build();
-
-        View view = this.findViewById(android.R.id.content);*/
-
-      /*  new DetailTask(mGoogleApiClient,view).execute(getIntent().getStringExtra(PLACES_ID));*/
-
-        /*new DetailTask(mGoogleApiClient){
-            @Override
-            protected void onPreExecute() {
-                Picasso.with( getApplicationContext() )
-                        .load( R.drawable.progress_animation  )
-                        .into( ivPlacePhoto );
-                // Display a temporary image to show while bitmap is loading.
-                //ivPlacePhoto.setImageResource(R.drawable.redpoint);
-            }
-            @Override
-            protected void onPostExecute(Place place) {
-                if (place != null) {
-                    // Photo has been loaded, display it.
-                    Picasso.with(getApplicationContext()).load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU&key=AIzaSyBq8yJ4I36zePlooPdERim4id66b6apSSg").into(ivPlacePhoto);
-
-                    *//* ivPlacePhoto.setImageBitmap(attributedPhoto.bitmap);*//*
-                }
-                else {
-                    Picasso.with(getApplicationContext()).load("static.pexels.com/photos/9579/pexels-photo.jpeg").into(ivPlacePhoto);
-                }
-            }
-        }.execute(getIntent().getStringExtra(PLACES_ID));*/
 
     }
 
@@ -113,4 +86,13 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
 
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        //seattle coordinates
+        LatLng seattle = new LatLng(47.6062095, -122.3320708);
+        mMap.addMarker(new MarkerOptions().position(seattle).title("Seattle"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(seattle));
+    }
 }

@@ -1,7 +1,10 @@
 package fesb.papac.marin.augmented_reality_poi.Service;
 
+import android.view.View;
+
 import java.util.ArrayList;
 
+import fesb.papac.marin.augmented_reality_poi.Model.Geometry;
 import fesb.papac.marin.augmented_reality_poi.Model.PointOfInterest;
 
 /**
@@ -14,5 +17,7 @@ public interface PointOfInterestService {
 
      ArrayList<PointOfInterest> getListOfPOI();
 
-     PointOfInterest getDetailsOfPlace(String placeID);
+     PointOfInterest getDetailsOfPlace(String placeID, View view);
+
+    Geometry setElevation(PointOfInterest poi);
 }

@@ -10,7 +10,7 @@
     android:layout_height="match_parent">
 
 
-
+<!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,15 +49,15 @@
                 android:layout_marginTop="20dp"
                 />
         </LinearLayout>
-        <!--<TextView-->
-            <!--android:text="PlaceName"-->
-            <!--android:id="@+id/placeName"-->
-            <!--android:layout_width="311dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textColor="@android:color/black"-->
-            <!--android:textSize="@dimen/article_titles"-->
-            <!--android:layout_marginTop="20dp"-->
-            <!--/>-->
+        &lt;!&ndash;<TextView&ndash;&gt;
+            &lt;!&ndash;android:text="PlaceName"&ndash;&gt;
+            &lt;!&ndash;android:id="@+id/placeName"&ndash;&gt;
+            &lt;!&ndash;android:layout_width="311dp"&ndash;&gt;
+            &lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;
+            &lt;!&ndash;android:textColor="@android:color/black"&ndash;&gt;
+            &lt;!&ndash;android:textSize="@dimen/article_titles"&ndash;&gt;
+            &lt;!&ndash;android:layout_marginTop="20dp"&ndash;&gt;
+            &lt;!&ndash;/>&ndash;&gt;
         <TextView
             android:text="Description"
             android:layout_width="311dp"
@@ -112,7 +112,7 @@
             android:textColor="@android:color/black"
             android:layout_marginTop="20dp"
             />
-    </LinearLayout>
+    </LinearLayout>-->
 
 </ScrollView>
 

@@ -56,6 +56,12 @@ public class PointOfInterest {
     @SerializedName("international_phone_number")
     @Expose
     private String international_phone_number;
+
+    @SerializedName("website")
+    @Expose
+    private String website;
+
+
     /**
      * @return The geometry
      */
@@ -272,5 +278,13 @@ public class PointOfInterest {
 
     public void setInternational_phone_number(String international_phone_number) {
         this.international_phone_number = international_phone_number;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 }

@@ -61,11 +61,10 @@ public class DetailTask extends AsyncTask<String, Void, Place> {
         String path = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=";
         final String KEY = context.getString(R.string.PHOTO_KEY);
         if (place != null) {
-             // Photo has been loaded, display it.
-            //Picasso.with(context).load(path+place.).into(ivPlacePhoto);
+            // Photo has been loaded, display it.
+            Picasso.with(context).load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU&key=AIzaSyBq8yJ4I36zePlooPdERim4id66b6apSSg").into(ivPlacePhoto);
 
             /* ivPlacePhoto.setImageBitmap(attributedPhoto.bitmap);*/
-            Picasso.with(context).load("static.pexels.com/photos/9579/pexels-photo.jpeg").into(ivPlacePhoto);
         }
         else {
             Picasso.with(context).load("static.pexels.com/photos/9579/pexels-photo.jpeg").into(ivPlacePhoto);
