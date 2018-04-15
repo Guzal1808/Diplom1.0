@@ -41,7 +41,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
     GoogleApiClient mGoogleApiClient;
     public static final String PLACES_ID = "ID";
     private GoogleMap mMap;
-
+    PointOfInterestController poiController;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +50,15 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
         final ImageView ivPlacePhoto = (ImageView) findViewById(R.id.card_image);
         View view = this.findViewById(android.R.id.content);
 
-        PointOfInterestController poiController = new PointOfInterestController(getApplicationContext());
+        poiController = new PointOfInterestController(getApplicationContext());
         poiController.getDetailsOfPlace(getIntent().getStringExtra(PLACES_ID), view);
+        if (poiController.getResultPlace()!=null)
+        {
+            Double d  = poiController.getResultPlace().getLongitude();
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        }
 
 
     }
@@ -89,7 +96,9 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        if (poiController.getResultPlace()!=null) {
+            Double d = poiController.getResultPlace().getLongitude();
+        }
         //seattle coordinates
         LatLng seattle = new LatLng(47.6062095, -122.3320708);
         mMap.addMarker(new MarkerOptions().position(seattle).title("Seattle"));

@@ -464,8 +464,6 @@ public class ViewMain extends View implements SensorEventListener,
 
                     if (x >= (((canvasWidth / 2) - dx) - 36 * 5) && x < ((canvasWidth / 2) - dx - (36 * 5) + 200) && y >= ((canvasHeight / 2) - dy - (95 * 4) - POIHight - 50) && y < ((canvasHeight / 2) - dy - (95 * 4) - POIHight + 400)) {
 
-                        //  Toast.makeText(context, pointOfInterests.get(i).getPlaces(), Toast.LENGTH_SHORT).show();
-                        //showWindow(this, i);
                         Intent intent = new Intent(context, PlaceDetailActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra(PlaceDetailActivity.PLACES_ID,pointOfInterests.get(i).getPlaceId());

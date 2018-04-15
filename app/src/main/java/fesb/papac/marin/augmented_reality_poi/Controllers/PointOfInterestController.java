@@ -1,13 +1,17 @@
 package fesb.papac.marin.augmented_reality_poi.Controllers;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -35,6 +39,7 @@ public class PointOfInterestController implements PointOfInterestService {
     ArrayList<PointOfInterest> listOfPOI=new ArrayList<>();
     Context context;
     PlacePhotoMetadata photo;
+    PointOfInterest resultPlace;
     final String url = "https://maps.googleapis.com/maps/";
 
     public PointOfInterestController(Context context) {
@@ -136,14 +141,23 @@ public class PointOfInterestController implements PointOfInterestService {
             public void onResponse(Call<HttpHelper> call, Response<HttpHelper> response) {
                 assert response.body() != null;
                 PointOfInterest place = response.body().getResult();
+                resultPlace = place;
                 String path="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=";
                 String photoKey = context.getString(R.string.PHOTO_KEY);
-                String fullPath = path+place.getPhotos().get(0).getPhotoReference()+"&key="+photoKey;
-                if (place!=null) {
-                    ImageView ivPlacePhoto = view.findViewById(R.id.card_image);
+                ImageView ivPlacePhoto = view.findViewById(R.id.card_image);
+                if (place.getPhotos().size()>0) {
+                    String fullPath = path + place.getPhotos().get(0).getPhotoReference() + "&key=" + photoKey;
+
                     Picasso.with(context)
                             .load(fullPath)
                             .into(ivPlacePhoto);
+                } else
+                {
+                    Picasso.with(context)
+                            .load(R.drawable.city)
+                            .into(ivPlacePhoto);
+                }
+
                     TextView placeName = view.findViewById(R.id.placeName);
                     TextView placeAddress = view.findViewById(R.id.placeAddress);
                     TextView placeTelNo = view.findViewById(R.id.placeTelNo);
@@ -158,11 +172,8 @@ public class PointOfInterestController implements PointOfInterestService {
                     placeWebURL.setText(place.getWebsite());
                     openingHours.setText(place.getOpeningHours() != null && place.getOpeningHours().getOpenNow() ? "Opened" : "Closed");
 
-                }
-                else
-                {
-                    Log.d("onFailure", "EMPTY");
-                }
+                    Linkify.addLinks(placeTelNo, Linkify.PHONE_NUMBERS);
+                    Linkify.addLinks(placeWebURL, Linkify.WEB_URLS);
             }
 
             @Override
@@ -172,5 +183,13 @@ public class PointOfInterestController implements PointOfInterestService {
         });
 
         return null;
+    }
+
+    public PointOfInterest getResultPlace() {
+        return resultPlace;
+    }
+
+    public void setResultPlace(PointOfInterest resultPlace) {
+        this.resultPlace = resultPlace;
     }
 }

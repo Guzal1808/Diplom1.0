@@ -65,31 +65,35 @@
                 android:text="Название"
                 android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/article_titles" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                tools:src="@drawable/clock"/>
-            <TextView
-                android:id="@+id/openingHours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/md_keylines"
-                tools:text="Opening Hours" />
-         </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/clock" />
+
+                <TextView
+                    android:id="@+id/openingHours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/md_keylines"
+                    tools:text="Opening Hours" />
+            </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/md_topspace"
             android:orientation="horizontal">
+
             <ImageView
-                android:layout_width="20dp"
+                android:layout_width="23dp"
                 android:layout_height="20dp"
-                tools:src="@drawable/map"/>
+                android:src="@drawable/map" />
 
             <TextView
                 android:id="@+id/placeAddress"
@@ -107,11 +111,10 @@
                 android:layout_marginStart="@dimen/md_keylines"
                 android:layout_marginTop="15dp"
                 android:numStars="5"
-                android:rating="0"
                 android:stepSize="0.1"
                 android:theme="@style/RatingBar" />
 
-            <TextView
+               <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/md_keylines"
@@ -127,12 +130,13 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                tools:src="@drawable/phone"/>
+                android:src="@drawable/phone" />
             <TextView
                 android:id="@+id/placeTelNo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/md_keylines"
+                android:autoLink="phone"
                 tools:text="Phone" />
         </LinearLayout>
         <LinearLayout
@@ -143,12 +147,13 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                tools:src="@drawable/website"/>
+                android:src="@drawable/website" />
             <TextView
                 android:id="@+id/placeWebURL"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/md_keylines"
+                android:autoLink="web"
                 tools:text="WebSite" />
         </LinearLayout>
 
@@ -162,14 +167,14 @@
                 android:textSize="@dimen/article_titles" />
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                android:name="com.google.android.gms.maps.MapFragment"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:id="@+id/map"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:paddingRight="10dp"/>
 
-                />
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>
