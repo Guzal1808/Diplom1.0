@@ -1,8 +1,9 @@
 package fesb.papac.marin.augmented_reality_poi.View;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
@@ -16,71 +17,111 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Places;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import fesb.papac.marin.augmented_reality_poi.Model.ViewTypes;
 import fesb.papac.marin.augmented_reality_poi.R;
 
 /**
  * Created by Dementor on 04.03.2018.
  */
 
-public class CardActivity extends AppCompatActivity{
+public class CardActivity extends AppCompatActivity {
+
+    protected static ViewTypes viewType = ViewTypes.AR;
+    FloatingActionButton fabType, fabAr, fabMap, fabList;
+    Animation FabClose, FabOpen, RotateBackward, RotateForward;
 
     private DrawerLayout mDrawerLayout;
+    boolean isOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.card_activity);
         // Adding Toolbar to Main screen
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 //        // Setting ViewPager for each Tabs
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 //        // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
-//        // Create Navigation drawer and inlfate layout
-////        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-////        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-//        // Adding menu icon to Toolbar
+
+        fabAr = findViewById(R.id.fab_ar);
+        fabMap = findViewById(R.id.fab_map);
+        fabType = findViewById(R.id.fab_type);
+
+        FabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        FabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        RotateBackward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
+        RotateForward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
+
+        fabType.setOnClickListener(v -> {
+            if (isOpen) {
+                changeFABAnimation(FabClose);
+                fabType.startAnimation(RotateBackward);
+                changeFABState(false);
+                isOpen = false;
+            } else {
+                changeFABAnimation(FabOpen);
+                fabType.startAnimation(RotateForward);
+                changeFABState(true);
+                isOpen = true;
+            }
+        });
+
+        fabAr.setOnClickListener(v ->
+        {
+            viewType = ViewTypes.AR;
+            fabType.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.my_amber)));
+            closeFAB();
+
+        });
+
+        fabMap.setOnClickListener(v -> {
+            viewType = ViewTypes.MAP;
+            fabType.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.my_cyan)));
+            closeFAB();
+        });
+
         ActionBar supportActionBar = getSupportActionBar();
 
 
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
                     = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
-            indicator.setTint(ResourcesCompat.getColor(getResources(),R.color.white,getTheme()));
+            indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // Set behavior of Navigation drawer
-//        navigationView.setNavigationItemSelectedListener(
-//                new NavigationView.OnNavigationItemSelectedListener() {
-//                    // This method will trigger on item Click of navigation menu
-//                    @Override
-//                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-//                        // Set item in checked state
-//                        menuItem.setChecked(true);
-//
-//                        // TODO: handle navigation
-//
-//                        // Closing drawer on item click
-//                        mDrawerLayout.closeDrawers();
-//                        return true;
-//                    }
-//                });
-        // Adding Floating Action Button to bottom right of main view
-
     }
 
+    private void changeFABState(boolean state)
+    {
+        fabAr.setClickable(state);
+        fabMap.setClickable(state);
+    }
+
+    private void changeFABAnimation(Animation animation)
+    {
+        fabAr.startAnimation(animation);
+        fabMap.startAnimation(animation);
+    }
+
+    private void closeFAB()
+    {
+        changeFABAnimation(FabClose);
+        fabType.startAnimation(RotateBackward);
+        changeFABState(false);
+        changeFABAnimation(FabClose);
+        fabType.startAnimation(RotateBackward);
+        changeFABState(false);
+        isOpen = false;
+    }
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());

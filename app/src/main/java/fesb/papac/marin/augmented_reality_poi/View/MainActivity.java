@@ -16,7 +16,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewMain Content;
     public static final String EXTRA_POSITION = "position";
-    String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
 
         alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {

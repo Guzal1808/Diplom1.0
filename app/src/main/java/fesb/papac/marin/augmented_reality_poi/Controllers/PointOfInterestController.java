@@ -46,6 +46,8 @@ public class PointOfInterestController implements PointOfInterestService {
         this.context = context;
     }
 
+
+
     @Override
     public void getPlacesByType(PointOfInterest poi) {
 
@@ -89,6 +91,24 @@ public class PointOfInterestController implements PointOfInterestService {
     }
 
     @Override
+    public Call<HttpHelper> getPlaces(PointOfInterest poi) {
+        final String KEY = context.getString(R.string.GOOGLEAPI_KEY);//"AIzaSyBPkUvg6Xz17H4uK5rBl-Hf7K7ItOvjCUA";
+
+        final String RADIUS= context.getString(R.string.SEARCHING_RADIUS);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitMaps service = retrofit.create(RetrofitMaps.class);
+
+        Call<HttpHelper> call = service.getNearbyPlaces(poi.getGeometry().getLocation().getLat() + "," + poi.getGeometry().getLocation().getLng(), RADIUS,poi.getType(), KEY);
+
+        return call;
+    }
+
+    @Override
     public ArrayList<PointOfInterest> getListOfPOI() {
 
         return listOfPOI;
@@ -121,6 +141,22 @@ public class PointOfInterestController implements PointOfInterestService {
         });
 
         return null;
+    }
+
+    @Override
+    public Call<HttpHelper> getResponseDetailsOfPlace(String placeID, View view) {
+        final String KEY = context.getString(R.string.DETAILS_KEY);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        RetrofitMaps service = retrofit.create(RetrofitMaps.class);
+
+        Call<HttpHelper> call = service.getDetailsOfPlace(placeID, KEY);
+
+        return call;
     }
 
     @Override

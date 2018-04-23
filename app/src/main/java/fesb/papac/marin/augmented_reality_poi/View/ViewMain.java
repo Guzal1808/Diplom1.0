@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -27,26 +26,19 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextPaint;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.PlacePhotoMetadata;
-import com.google.android.gms.location.places.Places;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fesb.papac.marin.augmented_reality_poi.Controllers.GooglePlayServicesAPI;
 import fesb.papac.marin.augmented_reality_poi.Controllers.PointOfInterestController;
 import fesb.papac.marin.augmented_reality_poi.Helper.PaintUtils;
 import fesb.papac.marin.augmented_reality_poi.Model.Geometry;
@@ -117,9 +109,9 @@ public class ViewMain extends View implements SensorEventListener,
     int bmpWidth = bmp.getWidth();
     int bmpHeight = bmp.getHeight();
 
-    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.food);
-    int iconWidth = icon.getWidth();
-    int iconHeigth = icon.getHeight();
+    Bitmap icon;
+    int iconWidth = 0;
+    int iconHeigth = 0;
 
     Bitmap bmpCompass = BitmapFactory.decodeResource(getResources(), R.drawable.kompas);
     float bmpCompassWidth = bmpCompass.getWidth();
@@ -144,6 +136,15 @@ public class ViewMain extends View implements SensorEventListener,
         this.handler = new Handler();
         this.type = type;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        //int id = getResources().getIdentifier(imageName, type, package);
+        try {
+            icon = BitmapFactory.decodeResource(getResources(), R.drawable.class.getField(type+"_icn").getInt(null));
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            icon = BitmapFactory.decodeResource(getResources(), R.drawable.cityscape);
+        }
+        iconWidth = icon.getWidth();
+        iconHeigth = icon.getHeight();
 
         sensors = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
@@ -370,7 +371,7 @@ public class ViewMain extends View implements SensorEventListener,
                 canvas.drawText(mytext2 + " meters ", (float) (canvasWidth / 2), (float) ((canvasHeight / 2) + 40f - POIHight), textPaint);
                 canvas.drawText(pointOfInterests.get(counter[i]).getOpeningHours() != null && pointOfInterests.get(counter[i]).getOpeningHours().getOpenNow() ? "Opened" : "Closed", (float) (canvasWidth / 2), (float) ((canvasHeight / 2) + 80f - POIHight), textPaint);
 
-                canvas.drawBitmap(icon, (float) ((canvasWidth / 2) - (textOffset * 20)) - iconWidth, (float) ((canvasHeight / 2) - 56 - POIHight), null);
+                canvas.drawBitmap(icon, (float) (canvasWidth / 2) - iconWidth*2, (float) ((canvasHeight / 2) + 10f - POIHight), null);
                 canvas.restore();
 
                 float radarLineX = (bmpCompassHeight / 2) * mathTan;
@@ -467,6 +468,8 @@ public class ViewMain extends View implements SensorEventListener,
                         Intent intent = new Intent(context, PlaceDetailActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra(PlaceDetailActivity.PLACES_ID,pointOfInterests.get(i).getPlaceId());
+                        intent.putExtra(PlaceDetailActivity.MY_LAT,endLat);
+                        intent.putExtra(PlaceDetailActivity.MY_LONG,endLong);
                         context.startActivity(intent);
                     }
 

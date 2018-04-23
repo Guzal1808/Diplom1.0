@@ -12,13 +12,13 @@ import retrofit2.http.Query;
 
 public interface RetrofitMaps {
 
-    @GET("api/place/nearbysearch/json?sensor=true")
+    @GET("api/place/nearbysearch/json?language=ru&sensor=true")
     Call<HttpHelper> getNearbyPlaces(@Query("location") String location, @Query("radius") String radius, @Query("type") String type, @Query("key") String key);
 
-    @GET("api/elevation/json?")
+    @GET("api/elevation/json?language=ru")
     Call<ElevationHelper> getElevation(@Query("locations") String locations, @Query("key") String key);
 
-    @GET("api/place/details/json?")
+    @GET("api/place/details/json?language=ru")
     Call<HttpHelper> getDetailsOfPlace(@Query("placeid") String placeid,@Query("key") String key);
 
 

@@ -18,11 +18,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import fesb.papac.marin.augmented_reality_poi.Model.ViewTypes;
 import fesb.papac.marin.augmented_reality_poi.R;
 
 
 public class CardFragment extends Fragment {
 
+    static ViewTypes viewType;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,11 +50,24 @@ public class CardFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    viewType= CardActivity.viewType;
                     Context context = v.getContext();
                     Resources resources = context.getResources();
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.putExtra(MainActivity.EXTRA_POSITION, resources.getStringArray(R.array.placesType)[getAdapterPosition()]);
-                    context.startActivity(intent);
+                    switch (viewType)
+                    {
+                        case AR:{
+                            Intent intent = new Intent(context, MainActivity.class);
+                            intent.putExtra(MainActivity.EXTRA_POSITION, resources.getStringArray(R.array.placesType)[getAdapterPosition()]);
+                            context.startActivity(intent);
+                            break;
+                        }
+                        case MAP:{
+                            Intent intent = new Intent(context, MapActivity.class);
+                            intent.putExtra(MapActivity.EXTRA_POSITION, resources.getStringArray(R.array.placesType)[getAdapterPosition()]);
+                            context.startActivity(intent);
+                            break;
+                        }
+                    }
                 }
             });
         }

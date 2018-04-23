@@ -166,13 +166,11 @@
                 android:textColor="?attr/colorAccent"
                 android:textSize="@dimen/article_titles" />
 
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:id="@+id/map"
+            <include android:id="@+id/map_fragment"
+                layout="@layout/map_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"/>
+                />
 
 
         </LinearLayout>
