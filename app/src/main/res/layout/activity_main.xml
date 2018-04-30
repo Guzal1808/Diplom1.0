@@ -26,6 +26,5 @@
         android:layout_height="match_parent"
         android:id="@+id/ar_view_pane_2"
         >
-
     </FrameLayout>
 </FrameLayout>

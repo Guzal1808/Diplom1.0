@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextPaint;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -129,12 +130,12 @@ public class ViewMain extends View implements SensorEventListener,
 
     private String type;
 
-
-    public ViewMain(Context context, String type) {
-        super(context);
+    public ViewMain(Context context, @Nullable AttributeSet attrs,String type) {
+        super(context, attrs);
         this.context = context;
         this.handler = new Handler();
         this.type = type;
+
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         //int id = getResources().getIdentifier(imageName, type, package);
@@ -162,17 +163,7 @@ public class ViewMain extends View implements SensorEventListener,
         startSensors();
         startGPS();
 
-        PointOfInterestController poiController = new PointOfInterestController(context);
-        PointOfInterest poi = new PointOfInterest();
-        LocationJSN locationJSN = new LocationJSN();
-        locationJSN.setLng(endLong);
-        locationJSN.setLat(endLat);
-        Geometry geo = new Geometry();
-        geo.setLocation(locationJSN);
-        poi.setGeometry(geo);
-        poi.setType(type);
-        poiController.getPlacesByType(poi);
-        listOfPOI = poiController.getListOfPOI();
+        getListOfPlaces();
 
         Camera camera = Camera.open();
         Camera.Parameters params = camera.getParameters();
@@ -189,6 +180,20 @@ public class ViewMain extends View implements SensorEventListener,
         linePaint = paintUtilities.getLinePaint();
     }
 
+    public void getListOfPlaces()
+    {
+        PointOfInterestController poiController = new PointOfInterestController(context);
+        PointOfInterest poi = new PointOfInterest();
+        LocationJSN locationJSN = new LocationJSN();
+        locationJSN.setLng(endLong);
+        locationJSN.setLat(endLat);
+        Geometry geo = new Geometry();
+        geo.setLocation(locationJSN);
+        poi.setGeometry(geo);
+        poi.setType(type);
+        poiController.getPlacesByType(poi);
+        listOfPOI = poiController.getListOfPOI();
+    }
 
     private void startSensors() {
 
@@ -247,7 +252,9 @@ public class ViewMain extends View implements SensorEventListener,
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         pointOfInterests = listOfPOI;
+
 
         float[] dist = new float[1];
         int[] distance = new int[pointOfInterests.size()];
@@ -525,7 +532,7 @@ public class ViewMain extends View implements SensorEventListener,
         endLat = location.getLatitude();
         endLong = location.getLongitude();
         endAlti = location.getAltitude();
-
+        getListOfPlaces();
     }
 
     public void onProviderDisabled(String provider) {

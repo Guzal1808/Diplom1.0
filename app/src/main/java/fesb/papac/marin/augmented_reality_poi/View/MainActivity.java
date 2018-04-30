@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         CameraView cameraView1 = new CameraView(this);
         ViewPane3.addView(cameraView1);
 
-       Content = new ViewMain(getApplicationContext(),getIntent().getStringExtra(EXTRA_POSITION));
+       Content = new ViewMain(getApplicationContext(),null,getIntent().getStringExtra(EXTRA_POSITION));
 
         ViewPane2.addView(Content);
 

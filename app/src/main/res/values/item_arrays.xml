@@ -3,16 +3,22 @@
     <string-array name="places">
         <item>Еда</item>
         <item>Досуг</item>
-        <item>Деньги</item>
+        <item>Покупки</item>
+        <item>Банки</item>
+        <item>Аэропорты</item>
     </string-array>
     <array name="places_picture">
         <item>@drawable/eat</item>
         <item>@drawable/enjoy</item>
+        <item>@drawable/shopping</item>
         <item>@drawable/money</item>
+        <item>@drawable/airport</item>
     </array>
     <array name="placesType">
         <item>restaurant</item>
         <item>park</item>
+        <item>shopping_mall</item>
         <item>bank</item>
+        <item>airport</item>
     </array>
 </resources>
