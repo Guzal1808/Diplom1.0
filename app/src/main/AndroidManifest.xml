@@ -32,12 +32,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".View.MainActivity"
-            ></activity>
-        <activity android:name=".View.CardActivity"
-            ></activity>
-        <activity android:name=".View.PlaceDetailActivity"></activity>
-        <activity android:name=".View.MapActivity"></activity>
+        <activity android:name=".View.MainActivity" />
+        <activity android:name=".View.CardActivity" />
+        <activity android:name=".View.PlaceDetailActivity" />
+        <activity android:name=".View.MapActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GOOGLEAPI_KEY" />

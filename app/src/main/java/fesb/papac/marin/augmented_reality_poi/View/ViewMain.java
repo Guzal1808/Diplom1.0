@@ -138,7 +138,6 @@ public class ViewMain extends View implements SensorEventListener,
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        //int id = getResources().getIdentifier(imageName, type, package);
         try {
             icon = BitmapFactory.decodeResource(getResources(), R.drawable.class.getField(type+"_icn").getInt(null));
         } catch (IllegalAccessException | NoSuchFieldException e) {

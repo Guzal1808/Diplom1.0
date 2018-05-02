@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="places">
-        <item>Еда</item>
-        <item>Досуг</item>
-        <item>Покупки</item>
-        <item>Банки</item>
-        <item>Аэропорты</item>
+        <item>eat:Еда</item>
+        <item>enjoy:Досуг</item>
+        <item>shopping:Покупки</item>
+        <item>money:Банки</item>
+        <item>transport:Транспорт</item>
+    </string-array>
+    <string-array name="eat">
+        <item>Кафе:cafe</item>
+        <item>Рестораны:restaurant</item>
+        <item>Пекарни:bakery</item>
+    </string-array>
+    <string-array name="enjoy">
+        <item>Парки:park</item>
+    </string-array>
+    <string-array name="shopping">
+        <item>Магазины одежды:clothing_store</item>
+        <item>Книжные магазины:book_store</item>
+        <item>Магазины техники:electronics_store</item>
+    </string-array>
+    <string-array name="money">
+        <item>Банки:bank</item>
+        <item>АТМ:atm</item>
+    </string-array>
+    <string-array name="transport">
+        <item>Остановки:bus_station</item>
+        <item>Аэропорты:airport</item>
     </string-array>
     <array name="places_picture">
         <item>@drawable/eat</item>
