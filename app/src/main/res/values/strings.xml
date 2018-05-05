@@ -5,4 +5,7 @@
     <string name="PHOTO_KEY">AIzaSyBq8yJ4I36zePlooPdERim4id66b6apSSg</string>
     <string name="ELEVATION_KEY">AIzaSyDSlf9m5PGFVhd6NnTjvZaIdVcLjlacStU</string>
     <string name="SEARCHING_RADIUS">500</string>
+
+    <string name="like_button_type">heart</string>
+
 </resources>

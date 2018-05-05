@@ -3,6 +3,7 @@ package fesb.papac.marin.augmented_reality_poi.View;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -24,6 +25,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -31,8 +33,7 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,23 +42,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fesb.papac.marin.augmented_reality_poi.Controllers.PointOfInterestController;
+import fesb.papac.marin.augmented_reality_poi.Helper.Connection;
 import fesb.papac.marin.augmented_reality_poi.Helper.PaintUtils;
 import fesb.papac.marin.augmented_reality_poi.Model.Geometry;
 import fesb.papac.marin.augmented_reality_poi.Model.LocationJSN;
 import fesb.papac.marin.augmented_reality_poi.Model.PointOfInterest;
 import fesb.papac.marin.augmented_reality_poi.R;
 
-
-
 public class ViewMain extends View implements SensorEventListener,
         LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
 
     double canvasWidth, canvasHeight;
     float compasBearing, POIBearing;
-    GoogleApiClient mGoogleApiClient;
-
     float radarRange = 600;
-
+    int tries = 0;
 
     public static List<PointOfInterest> pointOfInterests = new ArrayList<>();
 
@@ -87,15 +85,11 @@ public class ViewMain extends View implements SensorEventListener,
     private TextPaint contentPaint, textPaint;
     private Paint targetPaint, roundRec, borderRec, compassPaint, linePaint;
 
-    private int axisX, axisY, screenRot;
+    private int axisX, axisY;
 
     PaintUtils paintUtilities = new PaintUtils(this);
 
     float rotation[] = new float[9];
-    float identity[] = new float[9];
-
-    float compassRotation[] = new float[9];
-    float compasCameraRotation[] = new float[9];
 
     float cameraRotation[] = new float[9];
 
@@ -104,10 +98,8 @@ public class ViewMain extends View implements SensorEventListener,
 
     float orientation[] = new float[3];
     float orientationAplha[] = new float[3];
-    float compasOrientation[] = new float[3];
 
     Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.poismaller);
-    int bmpWidth = bmp.getWidth();
     int bmpHeight = bmp.getHeight();
 
     Bitmap icon;
@@ -120,14 +112,8 @@ public class ViewMain extends View implements SensorEventListener,
 
     Bitmap bmpPoint = BitmapFactory.decodeResource(getResources(), R.drawable.redpoint);
     float bmpPoinwWidth = bmpPoint.getWidth();
-    float bmpPointHeight = bmpPoint.getHeight();
 
     float mathTan;
-    ImageView image;
-    PopupWindow popupWindow;
-
-    static ArrayList<PointOfInterest> placesList = new ArrayList<>();
-
     private String type;
 
     public ViewMain(Context context, @Nullable AttributeSet attrs,String type) {
@@ -179,6 +165,8 @@ public class ViewMain extends View implements SensorEventListener,
         linePaint = paintUtilities.getLinePaint();
     }
 
+
+
     public void getListOfPlaces()
     {
         PointOfInterestController poiController = new PointOfInterestController(context);
@@ -218,9 +206,6 @@ public class ViewMain extends View implements SensorEventListener,
         network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         Criteria criteria = new Criteria();
-        // criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        // while we want fine accuracy, it's unlikely to work indoors where we
-        // do our testing. :)
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
@@ -251,9 +236,9 @@ public class ViewMain extends View implements SensorEventListener,
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         pointOfInterests = listOfPOI;
 
+        Connection connection = new Connection(context);
 
         float[] dist = new float[1];
         int[] distance = new int[pointOfInterests.size()];
@@ -377,7 +362,7 @@ public class ViewMain extends View implements SensorEventListener,
                 canvas.drawText(mytext2 + " meters ", (float) (canvasWidth / 2), (float) ((canvasHeight / 2) + 40f - POIHight), textPaint);
                 canvas.drawText(pointOfInterests.get(counter[i]).getOpeningHours() != null && pointOfInterests.get(counter[i]).getOpeningHours().getOpenNow() ? "Opened" : "Closed", (float) (canvasWidth / 2), (float) ((canvasHeight / 2) + 80f - POIHight), textPaint);
 
-                canvas.drawBitmap(icon, (float) (canvasWidth / 2) - iconWidth*2, (float) ((canvasHeight / 2) + 10f - POIHight), null);
+                canvas.drawBitmap(icon, (float) (canvasWidth / 2) - iconWidth * 2, (float) ((canvasHeight / 2) + 10f - POIHight), null);
                 canvas.restore();
 
                 float radarLineX = (bmpCompassHeight / 2) * mathTan;
@@ -431,6 +416,7 @@ public class ViewMain extends View implements SensorEventListener,
                 canvas.restore();
             }
         }
+
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -584,11 +570,11 @@ public class ViewMain extends View implements SensorEventListener,
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(context, "Connection to Google service was suspended", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(context, "Faild connection to Google service", Toast.LENGTH_LONG).show();
     }
 }

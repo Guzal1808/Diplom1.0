@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,6 +30,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.zip.Inflater;
@@ -58,6 +61,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
     private GoogleMap mMap;
     PointOfInterestController poiController;
     Context context;
+    public LikeButton likeButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,8 +70,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
         lat = getIntent().getDoubleExtra(MY_LAT,0.0);
         lon = getIntent().getDoubleExtra(MY_LONG,0.0);
         context = getApplicationContext();
-
-        final ImageView ivPlacePhoto = (ImageView) findViewById(R.id.card_image);
+        likeButton= findViewById(R.id.star_button);
         View view = this.findViewById(android.R.id.content);
 
         poiController = new PointOfInterestController(getApplicationContext());
@@ -140,7 +143,18 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             }
         });
 
+        likeButton.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                //TODO database insert
+                Toast.makeText(getApplicationContext(),"Liked",Toast.LENGTH_LONG).show();
+            }
 
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                Toast.makeText(getApplicationContext(),"DisLiked",Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

@@ -1,5 +1,8 @@
 package fesb.papac.marin.augmented_reality_poi.Adapters;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,4 +50,6 @@ public class CategoryAdapter  extends ExpandableRecyclerViewAdapter<CategoryView
     public void onBindGroupViewHolder(CategoryViewHolder holder, int flatPosition, ExpandableGroup group) {
         holder.setCategoryTitle(group);
     }
+
+
 }

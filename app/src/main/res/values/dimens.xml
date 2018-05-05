@@ -21,7 +21,14 @@
     <dimen name="card_border">5dp</dimen>
     <dimen name="list_item_height">48dp</dimen>
     <dimen name="horizontal_margin">16dp</dimen>
+
     <dimen name="list_item_left_margin">72dp</dimen>
     <dimen name="list_img_left_margin">40dp</dimen>
     <dimen name="list_text_left_margin">100dp</dimen>
+
+    <dimen name="like_button_size">40dp</dimen>
+    <dimen name="like_button_top">5dp</dimen>
+    <dimen name="like_button_height">30dp</dimen>
+    <dimen name="like_button_width">30dp</dimen>
+    <dimen name="like_button_right">8dp</dimen>
 </resources>

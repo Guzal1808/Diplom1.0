@@ -1,6 +1,9 @@
 package fesb.papac.marin.augmented_reality_poi.View;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,8 +18,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import fesb.papac.marin.augmented_reality_poi.Adapters.CategoryAdapter;
+import fesb.papac.marin.augmented_reality_poi.Helper.Connection;
 import fesb.papac.marin.augmented_reality_poi.Helper.PlacesDataFactory;
 import fesb.papac.marin.augmented_reality_poi.Model.ViewTypes;
 import fesb.papac.marin.augmented_reality_poi.R;
@@ -53,6 +58,8 @@ public class CardActivity extends AppCompatActivity {
         adapter = new CategoryAdapter(data.makeCategoryPlaces());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+
 
         fabAr = findViewById(R.id.fab_ar);
         fabMap = findViewById(R.id.fab_map);
@@ -101,6 +108,8 @@ public class CardActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+        Connection connection = new Connection(getApplicationContext());
+        connection.checkConnection();
 
     }
 
@@ -138,4 +147,6 @@ public class CardActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         adapter.onRestoreInstanceState(savedInstanceState);
     }
+
+
 }

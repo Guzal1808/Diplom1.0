@@ -9,36 +9,40 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import fesb.papac.marin.augmented_reality_poi.Helper.Connection;
 import fesb.papac.marin.augmented_reality_poi.R;
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewMain Content;
     public static final String EXTRA_POSITION = "position";
+    Connection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        connection = new Connection(getApplicationContext());
         final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             showSettingAlert();
         }
+        if (!connection.isOnline()) {
+            showAlert();
+        }
+            FrameLayout ViewPane2 = (FrameLayout) findViewById(R.id.ar_view_pane_2);
+            FrameLayout ViewPane3 = (FrameLayout) findViewById(R.id.ar_view_pane_3);
 
-        FrameLayout ViewPane2 = (FrameLayout) findViewById(R.id.ar_view_pane_2);
-        FrameLayout ViewPane3 = (FrameLayout) findViewById(R.id.ar_view_pane_3);
+            CameraView cameraView1 = new CameraView(this);
+            ViewPane3.addView(cameraView1);
 
-        CameraView cameraView1 = new CameraView(this);
-        ViewPane3.addView(cameraView1);
+            Content = new ViewMain(getApplicationContext(), null, getIntent().getStringExtra(EXTRA_POSITION));
 
-       Content = new ViewMain(getApplicationContext(),null,getIntent().getStringExtra(EXTRA_POSITION));
-
-        ViewPane2.addView(Content);
-
-
-
+            ViewPane2.addView(Content);
     }
+
     @Override
     protected void onPause() {
         Content.onPause();
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void showSettingAlert(){
+    public void showSettingAlert() {
 
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -78,5 +82,23 @@ public class MainActivity extends AppCompatActivity {
         alert11.show();
 
     }
+    private void showAlert() {
+        if (!connection.isOnline()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Internet connection is Not Enabled")
+                    .setMessage("Пожалуйста проверьте интернет подключение и повторите снова")
+                    .setPositiveButton("Проверить", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int arg1) {
+                            Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("Выйти",
+                            (dialog, id) -> dialog.cancel());
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+    }
+
 
 }

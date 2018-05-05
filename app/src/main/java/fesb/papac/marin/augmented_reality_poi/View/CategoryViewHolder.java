@@ -1,5 +1,7 @@
 package fesb.papac.marin.augmented_reality_poi.View;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.View;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -31,6 +33,8 @@ public class CategoryViewHolder extends GroupViewHolder {
         categoryName.setText(category.getTitle());
         icon.setBackgroundResource(((CategoryPlace) category).getIconResId());
     }
+
+
 
     @Override
     public void expand() {
