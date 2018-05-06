@@ -30,15 +30,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
 import java.util.zip.Inflater;
 
+import fesb.papac.marin.augmented_reality_poi.Adapters.DatabaseHandler;
 import fesb.papac.marin.augmented_reality_poi.Controllers.DetailTask;
 import fesb.papac.marin.augmented_reality_poi.Controllers.PhotoTask;
 import fesb.papac.marin.augmented_reality_poi.Controllers.PointOfInterestController;
+import fesb.papac.marin.augmented_reality_poi.Model.Favorite;
 import fesb.papac.marin.augmented_reality_poi.Model.HttpHelper;
 import fesb.papac.marin.augmented_reality_poi.Model.PointOfInterest;
 import fesb.papac.marin.augmented_reality_poi.R;
@@ -62,6 +66,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
     PointOfInterestController poiController;
     Context context;
     public LikeButton likeButton;
+    private PointOfInterest place;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,7 +77,6 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
         context = getApplicationContext();
         likeButton= findViewById(R.id.star_button);
         View view = this.findViewById(android.R.id.content);
-
         poiController = new PointOfInterestController(getApplicationContext());
 
         poiController.getResponseDetailsOfPlace(getIntent().getStringExtra(PLACES_ID), view)
@@ -80,7 +84,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             @Override
             public void onResponse(Call<HttpHelper> call, Response<HttpHelper> response) {
                 assert response.body() != null;
-                PointOfInterest place = response.body().getResult();
+                place = response.body().getResult();
                 String path="https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=";
                 String photoKey = context.getString(R.string.PHOTO_KEY);
                 ImageView ivPlacePhoto = view.findViewById(R.id.card_image);
@@ -147,7 +151,17 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             @Override
             public void liked(LikeButton likeButton) {
                 //TODO database insert
-                Toast.makeText(getApplicationContext(),"Liked",Toast.LENGTH_LONG).show();
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                List<Favorite> fav = db.readAllFavorite();
+                Gson gson = new Gson();
+                if(db.addFavorite(new Favorite(place.getName(),place.getLocation(), gson.toJson(place), place.getType())))
+                {
+                     Toast.makeText(getApplicationContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Уже есть в вашем списке", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override

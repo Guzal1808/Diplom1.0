@@ -36,6 +36,7 @@
         <activity android:name=".View.CardActivity" />
         <activity android:name=".View.PlaceDetailActivity" />
         <activity android:name=".View.MapActivity" />
+        <activity android:name=".View.MainCardActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GOOGLEAPI_KEY" />

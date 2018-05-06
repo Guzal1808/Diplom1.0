@@ -287,4 +287,9 @@ public class PointOfInterest {
     public void setWebsite(String website) {
         this.website = website;
     }
+
+    public String getLocation()
+    {
+        return getLatitude()+";"+getLongitude();
+    }
 }

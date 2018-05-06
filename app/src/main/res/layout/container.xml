@@ -1,0 +1,47 @@
+<FrameLayout android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_ar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="@dimen/md_keylines"
+        android:layout_marginBottom="180dp"
+        android:tint="@color/white"
+        android:src="@drawable/ar"
+        android:visibility="invisible"
+        app:backgroundTint="@color/my_amber"
+        app:pressedTranslationZ="12dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="@dimen/md_keylines"
+        android:layout_marginBottom="100dp"
+        android:tint="@color/white"
+        android:src="@drawable/map"
+        android:visibility="invisible"
+        app:backgroundTint="@color/my_cyan"
+        app:pressedTranslationZ="12dp"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="@dimen/md_keylines"
+        android:layout_marginBottom="16dp"
+        android:tint="@color/white"
+        android:src="@drawable/more"
+        app:backgroundTint="@color/my_amber"
+        app:pressedTranslationZ="12dp"/>
+
+</FrameLayout>
