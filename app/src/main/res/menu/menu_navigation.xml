@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_navigation_news"
-        android:title="Discover"
+        android:id="@+id/menu_discover"
+        android:title="@string/discover"
         android:icon="@drawable/globe"
         android:orderInCategory="1"
-
-        />
+        app:showAsAction="always" />
     <item
-        android:id="@+id/menu_navigation_places"
-        android:title="Favorite"
+        android:id="@+id/menu_favorite"
+        android:title="@string/favorite"
         android:icon="@drawable/placeholder"
         android:orderInCategory="2"
+        app:showAsAction="always"
         />
 </menu>

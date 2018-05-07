@@ -37,7 +37,7 @@ public class Navigation extends AppCompatActivity
         toogle.syncState();
 
         nvDrawer = (NavigationView) findViewById(R.id.nav_view);
-
+        nvDrawer.setItemIconTintList(null);
         setupDrawerContent(nvDrawer);
     }
 
@@ -69,48 +69,21 @@ public class Navigation extends AppCompatActivity
     public void selectDrawerItem(MenuItem menuItem) {
 
         switch (menuItem.getItemId()) {
-           /* case R.id.menu_navigation_news:
-                initNewsContent();
-
-                break;*/
-            case R.id.menu_navigation_places:
+            case R.id.menu_discover:
                 initCategory();
                 break;
-           /* case R.id.menu_navigation_calendar:
-                initEvents();
-                break;
-            case R.id.menu_navigation_favor:
+            case R.id.menu_favorite:
                 initFavorite();
-                break;*/
+                break;
         }
-
-
         setTitle(menuItem.getTitle());
         mDrawer.closeDrawers();
     }
-
-
-    /*public void initNewsContent() {
-
-        frameLayout = (FrameLayout) findViewById(R.id.container);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        SlidingFragment fragment = new SlidingFragment();
-        transaction.replace(R.id.container, fragment);
-        transaction.commit();
-    }*/
 
     public void initCategory() {
         frameLayout = (FrameLayout) findViewById(R.id.container);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         CardFragment fragment = new CardFragment();
-        transaction.replace(R.id.container, fragment);
-        transaction.commit();
-    }
-
-    /*public void initEvents() {
-        frameLayout = (FrameLayout) findViewById(R.id.container);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        EventsFragment fragment = new EventsFragment();
         transaction.replace(R.id.container, fragment);
         transaction.commit();
     }
@@ -122,6 +95,6 @@ public class Navigation extends AppCompatActivity
         transaction.replace(R.id.container, fragment);
         transaction.commit();
     }
-*/
+
 
 }
