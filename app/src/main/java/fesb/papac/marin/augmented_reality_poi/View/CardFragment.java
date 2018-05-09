@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,28 +63,7 @@ public class CardFragment extends Fragment {
 
     }
 
-    //    protected static ViewTypes viewType = ViewTypes.AR;
-//    public CategoryAdapter adapter;
-//
-//    FloatingActionButton fabType, fabAr, fabMap, fabList;
-//    Animation FabClose, FabOpen, RotateBackward, RotateForward;
-//
-//    boolean isOpen = false;
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-//                R.layout.recycler_view, container, false);
-//        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setHasFixedSize(true);
-//
-//        return recyclerView;
-//    }
-//
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView picture;
         public TextView name;
 
@@ -92,25 +72,22 @@ public class CardFragment extends Fragment {
             picture = (ImageView) itemView.findViewById(R.id.card_image);
             name = (TextView) itemView.findViewById(R.id.card_title);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewType = CardActivity.viewType;
-                    Context context = v.getContext();
-                    Resources resources = context.getResources();
-                    switch (viewType) {
-                        case AR: {
-                            Intent intent = new Intent(context, MainActivity.class);
-                            intent.putExtra(MainActivity.EXTRA_POSITION, resources.getStringArray(R.array.placesType)[getAdapterPosition()]);
-                            context.startActivity(intent);
-                            break;
-                        }
-                        case MAP: {
-                            Intent intent = new Intent(context, MapActivity.class);
-                            intent.putExtra(MapActivity.EXTRA_POSITION, resources.getStringArray(R.array.placesType)[getAdapterPosition()]);
-                            context.startActivity(intent);
-                            break;
-                        }
+            itemView.setOnClickListener(v -> {
+                viewType = CardActivity.viewType;
+                Context context = v.getContext();
+                Resources resources = context.getResources();
+                switch (viewType) {
+                    case AR: {
+                        Intent intent = new Intent(context, MainActivity.class);
+                        intent.putExtra(MainActivity.EXTRA_POSITION, resources.getStringArray(R.array.placesType)[getAdapterPosition()]);
+                        context.startActivity(intent);
+                        break;
+                    }
+                    case MAP: {
+                        Intent intent = new Intent(context, MapActivity.class);
+                        intent.putExtra(MapActivity.EXTRA_POSITION, resources.getStringArray(R.array.placesType)[getAdapterPosition()]);
+                        context.startActivity(intent);
+                        break;
                     }
                 }
             });

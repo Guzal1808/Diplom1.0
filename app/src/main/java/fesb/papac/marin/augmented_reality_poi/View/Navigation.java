@@ -1,6 +1,7 @@
 package fesb.papac.marin.augmented_reality_poi.View;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -8,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import fesb.papac.marin.augmented_reality_poi.R;
@@ -27,28 +29,25 @@ public class Navigation extends AppCompatActivity
         setContentView(R.layout.navigation_view);
 
         // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+       // toolbar.setTitleTextColor(0xFFFFFFFF);
 
-        mDrawer = (DrawerLayout) findViewById(R.id.navigation_view);
-
+        mDrawer = findViewById(R.id.navigation_view);
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.setDrawerListener(toogle);
         toogle.syncState();
 
-        nvDrawer = (NavigationView) findViewById(R.id.nav_view);
+        nvDrawer = findViewById(R.id.nav_view);
         nvDrawer.setItemIconTintList(null);
         setupDrawerContent(nvDrawer);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
     }
 
@@ -81,7 +80,10 @@ public class Navigation extends AppCompatActivity
     }
 
     public void initCategory() {
-        frameLayout = (FrameLayout) findViewById(R.id.container);
+        FloatingActionButton floatType;
+        frameLayout = findViewById(R.id.container);
+        floatType = findViewById(R.id.fab_type);
+        floatType.setVisibility(View.VISIBLE);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         CardFragment fragment = new CardFragment();
         transaction.replace(R.id.container, fragment);
@@ -89,7 +91,10 @@ public class Navigation extends AppCompatActivity
     }
 
     public void initFavorite() {
-        frameLayout = (FrameLayout) findViewById(R.id.container);
+        FloatingActionButton floatType;
+        frameLayout = findViewById(R.id.container);
+        floatType = findViewById(R.id.fab_type);
+        floatType.setVisibility(View.INVISIBLE);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         FavoriteActivity fragment = new FavoriteActivity();
         transaction.replace(R.id.container, fragment);

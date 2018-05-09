@@ -31,7 +31,7 @@ public class TypesPlaceViewHolder extends ChildViewHolder {
         view=itemView;
         childTextView = (TextView) itemView.findViewById(R.id.list_item_artist_name);
         childImageView = itemView.findViewById(R.id.list_item_artist_icon);
-        childTextView.setOnClickListener(v -> {
+        itemView.setOnClickListener(v -> {
             viewType= CardActivity.viewType;
             Context context = v.getContext();
             Resources resources = context.getResources();

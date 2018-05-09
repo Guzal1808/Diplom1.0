@@ -237,9 +237,6 @@ public class ViewMain extends View implements SensorEventListener,
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         pointOfInterests = listOfPOI;
-
-        Connection connection = new Connection(context);
-
         float[] dist = new float[1];
         int[] distance = new int[pointOfInterests.size()];
         int[] counter = new int[pointOfInterests.size()];

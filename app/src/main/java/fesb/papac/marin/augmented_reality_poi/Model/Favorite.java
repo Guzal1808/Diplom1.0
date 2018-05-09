@@ -7,14 +7,16 @@ public class Favorite {
     public String location;
     public String details;
     private String type;
-
+    private  byte[] image;
+    private PointOfInterest place;
     public Favorite() {
     }
 
-    public Favorite(String name, String location, String details, String type) {
+    public Favorite(String name, String location, String details,byte[] img, String type) {
         this.name = name;
         this.location = location;
         this.details = details;
+        this.image = img;
         this.type = type;
     }
 
@@ -56,5 +58,21 @@ public class Favorite {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public PointOfInterest getPlace() {
+        return place;
+    }
+
+    public void setPlace(PointOfInterest place) {
+        this.place = place;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

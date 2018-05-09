@@ -13,7 +13,7 @@ import fesb.papac.marin.augmented_reality_poi.Model.Favorite;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
     public static final String DATABASE_NAME = "favoritePlaces";
@@ -26,9 +26,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_NAME = "name";
     public static final String KEY_LOCATION = "location";
     public static final String KEY_DETAILS = "details";
+    public static  final String KEY_IMG = "img";
     public static final String KEY_TYPE = "type";
 
-    private String[] columns = {KEY_ID, KEY_NAME, KEY_LOCATION, KEY_DETAILS, KEY_TYPE};
+
+    private String[] columns = {KEY_ID, KEY_NAME, KEY_LOCATION, KEY_DETAILS, KEY_IMG,KEY_TYPE};
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -43,6 +45,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_NAME + " TEXT,"
                 + KEY_LOCATION + " TEXT,"
                 + KEY_DETAILS + " TEXT,"
+                + KEY_IMG + " BLOB,"
                 + KEY_TYPE + " TEXT)";
         db.execSQL(CREATE_CATEGORIES_TABLE);
     }
@@ -67,6 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_NAME, favorite.getName());
         values.put(KEY_LOCATION, favorite.getLocation());
         values.put(KEY_DETAILS, favorite.getDetails());
+        values.put(KEY_IMG, favorite.getImage());
         values.put(KEY_TYPE, favorite.getType());
 
         Cursor cursor = db.rawQuery("select * from " + TABLE_LABELS + " where " + KEY_NAME + " ='" + favorite.getName() + "'", null);
@@ -81,6 +85,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public List<Favorite> readAllFavorite() {
         // Get db writable
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Define contacts list
@@ -96,7 +101,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             favorite.setName(cursor.getString(1));
             favorite.setLocation(cursor.getString(2));
             favorite.setDetails(cursor.getString(3));
-            favorite.setType(cursor.getString(4));
+            favorite.setImage(cursor.getBlob(4));
+            favorite.setType(cursor.getString(5));
             favorites.add(favorite);
             cursor.moveToNext();
         }
@@ -106,10 +112,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return favorites;
     }
 
-    public boolean deleteFavorite(int id) {
+    public Favorite getFavoriteById(String id)
+    {
+        // Get db writable
+        SQLiteDatabase db = this.getWritableDatabase();
+        Favorite favorite = new Favorite();
+        // Define contacts list
+
+        Cursor cursor = db.query(TABLE_LABELS, columns, KEY_ID + " = ?", new String[]{id}, null, null, null);
+
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            favorite.setId(Integer.parseInt(cursor.getString(0)));
+            favorite.setName(cursor.getString(1));
+            favorite.setLocation(cursor.getString(2));
+            favorite.setDetails(cursor.getString(3));
+            favorite.setImage(cursor.getBlob(4));
+            favorite.setType(cursor.getString(5));
+        }
+
+        // Make sure to close the cursor
+        cursor.close();
+
+        return favorite;
+    }
+
+    public boolean deleteFavorite(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        int i = db.delete(TABLE_LABELS, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+        int i = db.delete(TABLE_LABELS, KEY_ID + " = ?", new String[]{id});
 
         db.close();
 
@@ -120,5 +151,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+    public boolean deleteAllRecords()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int i = db.delete(TABLE_LABELS, null, null);
+
+        db.close();
+
+        if (i != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -38,12 +39,13 @@ public class CardActivity extends Navigation {
 
     }
 
+
     public void initCategory() {
 
         fabAr =  findViewById(R.id.fab_ar);
         fabMap = findViewById(R.id.fab_map);
         fabType = findViewById(R.id.fab_type);
-
+        fabType.setVisibility(View.VISIBLE);
         FabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         FabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         RotateBackward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);

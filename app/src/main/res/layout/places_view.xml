@@ -21,6 +21,7 @@
         android:layout_toRightOf="@+id/list_avatar"
         tools:text="Title"
         android:textAppearance="?attr/textAppearanceListItem"
+        android:textColor="@color/black"
         android:textSize="@dimen/article_subheading" />
 
     <TextView
