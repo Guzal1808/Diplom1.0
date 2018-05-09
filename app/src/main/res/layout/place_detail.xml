@@ -25,11 +25,6 @@
             app:expandedTitleMarginStart="@dimen/md_keylines"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">-->
-
                 <ImageView
                     android:id="@+id/card_image"
                     android:layout_width="match_parent"
@@ -40,9 +35,6 @@
                     tools:background="@drawable/eat" />
 
 
-            <!--</LinearLayout>-->
-
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -50,18 +42,6 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-          <!--  <com.like.LikeButton
-                android:id="@+id/star_button"
-                android:layout_width="@dimen/like_button_width"
-                android:layout_height="@dimen/like_button_height"
-                android:layout_alignRight="@+id/img"
-                android:layout_marginRight="@dimen/like_button_right"
-                android:layout_marginTop="@dimen/like_button_top"
-                app:icon_size="@dimen/like_button_size"
-                app:icon_type="@string/like_button_type"
-                app:srcCompat="@drawable/ic_favorite"
-                tools:ignore="VectorDrawableCompat" />
--->
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

@@ -5,11 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fesb.papac.marin.augmented_reality_poi.Model.Favorite;
+
+import static fesb.papac.marin.augmented_reality_poi.View.ViewMain.DEBUG_TAG;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     // Database Version
@@ -97,14 +100,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         while (!cursor.isAfterLast()) {
             Favorite favorite = new Favorite();
-            favorite.setId(Integer.parseInt(cursor.getString(0)));
-            favorite.setName(cursor.getString(1));
-            favorite.setLocation(cursor.getString(2));
-            favorite.setDetails(cursor.getString(3));
-            favorite.setImage(cursor.getBlob(4));
-            favorite.setType(cursor.getString(5));
-            favorites.add(favorite);
-            cursor.moveToNext();
+            try {
+                favorite.setId(Integer.parseInt(cursor.getString(0)));
+                favorite.setName(cursor.getString(1));
+                favorite.setLocation(cursor.getString(2));
+                favorite.setDetails(cursor.getString(3));
+                favorite.setImage(cursor.getBlob(4));
+                favorite.setType(cursor.getString(5));
+                favorites.add(favorite);
+                cursor.moveToNext();
+            }
+            catch (Exception ex)
+            {
+                Log.d(DEBUG_TAG, "readAllFavorite"+ex);
+            }
         }
 
         // Make sure to close the cursor
@@ -149,6 +158,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         } else {
             return false;
         }
+    }
+
+    public boolean deleteFavoriteByName(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int i = db.delete(TABLE_LABELS, KEY_NAME + " = ?", new String[]{name});
+
+        db.close();
+
+        if (i != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkIfExist(String name)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Favorite favorite = new Favorite();
+        boolean ifExist=false;
+        // Define contacts list
+
+        Cursor cursor = db.query(TABLE_LABELS, columns, KEY_NAME + " = ?", new String[]{name}, null, null, null);
+
+        if(cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            ifExist=true;
+        }
+
+        // Make sure to close the cursor
+        cursor.close();
+
+        return ifExist;
     }
 
     public boolean deleteAllRecords()

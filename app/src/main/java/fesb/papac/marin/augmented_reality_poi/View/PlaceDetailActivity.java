@@ -173,7 +173,8 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                Toast.makeText(getApplicationContext(),"DisLiked",Toast.LENGTH_LONG).show();
+                db.deleteFavoriteByName(place.getName());
+                Toast.makeText(getApplicationContext(),"Удалено из избранного",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -224,7 +225,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
         ratingBar.setRating(place.getRating()!=null ? place.getRating().floatValue() : 0.0f);
         placeWebURL.setText(place.getWebsite());
         openingHours.setText(place.getOpeningHours() != null && place.getOpeningHours().getOpenNow() ? "Opened" : "Closed");
-
+        likeButton.setLiked(db.checkIfExist(place.getName()));
         Linkify.addLinks(placeTelNo, Linkify.PHONE_NUMBERS);
         Linkify.addLinks(placeWebURL, Linkify.WEB_URLS);
     }
